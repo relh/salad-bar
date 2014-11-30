@@ -2,7 +2,10 @@ package net.relh.saladgraphics;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,11 +57,11 @@ public class GraphicalBowl extends Activity {
         };
 
         ArrayAdapter<String> baseAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, bases);
+                android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, bases);
         ArrayAdapter<String> proteinAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, proteins);
+                android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, proteins);
         ArrayAdapter<String> toppingAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, toppings);
+                android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, toppings);
 
         // Assign adapter to ListView
         baseList.setAdapter(baseAdapter);
@@ -66,7 +69,7 @@ public class GraphicalBowl extends Activity {
         toppingList.setAdapter(toppingAdapter);
 
         // Add headers
-        TextView baseHeader = (TextView) findViewById(R.id.baseHeader);
+        final TextView baseHeader = (TextView) findViewById(R.id.baseHeader);
         baseHeader.setText("Bases:");
         baseHeader.setBackgroundColor(Color.RED);
 
@@ -90,6 +93,7 @@ public class GraphicalBowl extends Activity {
 
                 // ListView Clicked item value
                 String  itemValue    = (String) baseList.getItemAtPosition(position);
+
 
                 // Show Alert
                 Toast.makeText(getApplicationContext(),
