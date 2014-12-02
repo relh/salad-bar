@@ -3,7 +3,7 @@ package cmsc436.GroupProject;
 import java.util.ArrayList;
 
 public class Salad {
-	private SaladTopping letuce;
+	private SaladTopping lettuce;
 	private SaladTopping dressing;
 	
 	private ArrayList<SaladTopping> protiens;
@@ -11,15 +11,15 @@ public class Salad {
 	private ArrayList<SaladTopping> toppings;
 	
 	public Salad(){
-		this.letuce = null;
+		this.lettuce = null;
 		this.dressing = null;	
 		this.protiens = new ArrayList<SaladTopping>();
 		this.cheeses = new ArrayList<SaladTopping>();
 		this.toppings = new ArrayList<SaladTopping>();
 	}
 	
-	public SaladTopping getLetuce(){
-		return this.letuce;
+	public SaladTopping getlettuce(){
+		return this.lettuce;
 	}	
 	
 	public SaladTopping getDressing(){
@@ -36,6 +36,14 @@ public class Salad {
 	
 	public ArrayList<SaladTopping> getToppings(){
 		return this.toppings;
+	}
+	
+	public void setSaladDressing(SaladTopping dressing){
+		this.dressing = dressing;
+	}
+	
+	public void setSaladLettuce(SaladTopping lettuce){
+		this.lettuce = lettuce;
 	}
 	
 	public void toggleSaladTopping(SaladTopping topping){
