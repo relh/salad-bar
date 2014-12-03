@@ -1,9 +1,12 @@
 package net.relh.saladgraphics;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,11 +16,15 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 
 public class GraphicalBowl extends Activity {
@@ -34,26 +41,54 @@ public class GraphicalBowl extends Activity {
 
         // Defined Array values to show in ListView
         String[] bases = new String[]{
-                "spinach",
-                "lettuce"
+                "Spinach",
+                "Romaine Lettuce",
+                "Iceberg Lettuce"
         };
         String[] proteins = new String[]{
-                "spinach",
-                "lettuce"
+                "Diced Egg",
+                "Diced Ham",
+                "Bacon Bits",
+                "Kidney Beans",
+                "Shrimp",
+                "Garbanzo Beans",
+                "Chicken Breast"
         };
         String[] toppings = new String[]{
-                "broccoli",
-                "mushrooms",
-                "olives",
-                "tomatoes",
-                "avocado",
-                "carrots",
-                "corn",
-                "onions",
-                "cucumber",
-                "peppers",
-                "oranges",
-                "apples"
+                "Applesauce",
+                "Artichokes",
+                "Black Olives",
+                "Broccoli",
+                "Cauliflower",
+                "Cherry Tomatoes",
+                "Corn",
+                "Cottage Cheese",
+                "Craisins",
+                "Crispy Noodles",
+                "Croutons",
+                "Feta Cheese",
+                "Gelatin",
+                "Gelatin Whip",
+                "Green Olives",
+                "Hummus",
+                "Jalapenos",
+                "Matchstick Carrots",
+                "Mushrooms",
+                "Parmesan Cheese",
+                "Peas",
+                "Pepperoncini",
+                "Pickled Beets",
+                "Radishes",
+                "Raisins",
+                "Roasted Red Pepper",
+                "Shredded Mozzarella",
+                "Shredded Monterey Jack Cheese",
+                "Sliced Cucumber",
+                "Sliced Peaches",
+                "Sliced Red Onion",
+                "Stewed Prunes",
+                "Strawberry Whip",
+                "Sunflower Seeds"
         };
 
         ArrayAdapter<String> baseAdapter = new ArrayAdapter<String>(this,
@@ -81,31 +116,16 @@ public class GraphicalBowl extends Activity {
         toppingHeader.setText("Toppings:");
         toppingHeader.setBackgroundColor(Color.BLUE);
 
+        items = new ArrayList<ImageView>();
+        saladItemClickListener listener = new saladItemClickListener();
+
         // ListView Item Click Listener
-        baseList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-
-                // ListView Clicked item index
-                int itemPosition     = position;
-
-                // ListView Clicked item value
-                String  itemValue    = (String) baseList.getItemAtPosition(position);
-
-
-                // Show Alert
-                Toast.makeText(getApplicationContext(),
-                        "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
-                        .show();
-
-            }
-
-        });
+        baseList.setOnItemClickListener(listener);
+        proteinList.setOnItemClickListener(listener);
+        toppingList.setOnItemClickListener(listener);
 
         // IMAGES
-        LinearLayout layout = (LinearLayout) findViewById(R.id.graphicLayout);
+        layout = (GridLayout) findViewById(R.id.graphicLayout);
 
     }
 
@@ -131,4 +151,39 @@ public class GraphicalBowl extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public ArrayList<ImageView> items;
+    public GridLayout layout;
+
+    public class saladItemClickListener implements AdapterView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view,
+                                int position, long id) {
+
+            // ListView Clicked item index
+            int itemPosition     = position;
+
+            // ListView Clicked item value
+            String  itemValue    = (String) parent.getItemAtPosition(position);
+
+            itemValue = itemValue.replaceAll(" ", "_").toLowerCase();
+
+            // Show Alert
+            Toast.makeText(getApplicationContext(),
+                    "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
+                    .show();
+
+            ImageView item = new ImageView(getApplicationContext());
+            item.setBackgroundResource(getResources().getIdentifier(itemValue, "drawable", getApplicationContext().getPackageName()));
+
+            layout.addView(item);
+            items.add(item);
+
+            Log.i("array list of items", items.toString());
+
+            //rocketAnimation = (AnimationDrawable) rocketImage.getBackground();
+        }
+    }
+
 }
