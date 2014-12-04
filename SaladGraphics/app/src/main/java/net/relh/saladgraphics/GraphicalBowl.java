@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class GraphicalBowl extends Activity {
@@ -90,11 +91,11 @@ public class GraphicalBowl extends Activity {
         };
 
         ArrayAdapter<String> baseAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, bases);
+                R.layout.salad_item, android.R.id.text1, bases);
         ArrayAdapter<String> proteinAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, proteins);
+                R.layout.salad_item, android.R.id.text1, proteins);
         ArrayAdapter<String> toppingAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, toppings);
+                R.layout.salad_item, android.R.id.text1, toppings);
 
         // Assign adapter to ListView
         baseList.setAdapter(baseAdapter);
@@ -114,7 +115,7 @@ public class GraphicalBowl extends Activity {
         toppingHeader.setText("Toppings:");
         toppingHeader.setBackgroundColor(Color.BLUE);
 
-        items = new ArrayList<ImageView>();
+        items = new HashMap<String, ImageView>();
         saladItemClickListener listener = new saladItemClickListener();
 
         // ListView Item Click Listener
@@ -150,7 +151,7 @@ public class GraphicalBowl extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public ArrayList<ImageView> items;
+    public HashMap<String, ImageView> items;
     public GridLayout layout;
 
     public class saladItemClickListener implements AdapterView.OnItemClickListener {
@@ -168,17 +169,21 @@ public class GraphicalBowl extends Activity {
             itemValue = itemValue.replaceAll(" ", "_").toLowerCase();
 
             // Show Alert
-            Toast.makeText(getApplicationContext(),
-                    "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
-                    .show();
+            //Toast.makeText(getApplicationContext(),
+            //       "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
+            //        .show();
 
-            ImageView item = new ImageView(getApplicationContext());
-            item.setBackgroundResource(getResources().getIdentifier(itemValue, "drawable", getApplicationContext().getPackageName()));
+            if (!items.containsKey(itemValue)) {
+                ImageView item = new ImageView(getApplicationContext());
+                item.setBackgroundResource(getResources().getIdentifier(itemValue, "drawable", getApplicationContext().getPackageName()));
 
-            layout.addView(item);
-            items.add(item);
-
-            Log.i("array list of items", items.toString());
+                layout.addView(item);
+                items.put(itemValue, item);
+            } else {
+                layout.removeView(items.get(itemValue));
+                items.remove(itemValue);
+            }
+            //Log.i("array list of items", items.toString());
 
             //rocketAnimation = (AnimationDrawable) rocketImage.getBackground();
         }
