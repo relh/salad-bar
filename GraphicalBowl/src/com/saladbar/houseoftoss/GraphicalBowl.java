@@ -204,7 +204,8 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
     private float x, y, z, last_x, last_y, last_z;
     long curTime;
     long lastUpdate = 0;
-
+    boolean shakeStarted = false;
+    
     // Shakes insta close the activity
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -223,8 +224,10 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
 
             float speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
 
-            if (speed > SHAKE_THRESHOLD) {
-                Log.d("sensor", "shake detected w/ speed: " + speed);
+            
+            if (speed > SHAKE_THRESHOLD && !shakeStarted) {
+                shakeStarted = true;
+            	Log.d("sensor", "shake detected w/ speed: " + speed);
                 Toast.makeText(this, "shake detected w/ speed: " + speed, Toast.LENGTH_SHORT).show();
                 
                 // Create intent to deliver some kind of result data
