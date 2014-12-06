@@ -2,12 +2,16 @@ package com.saladbar.houseoftoss;
 
 import java.util.ArrayList;
 
-public class Salad {
+public class Salad{
 	public static final String ITEM_SEP = System.getProperty("line.separator");
 	private ArrayList<String> toppings;
 	
 	public Salad(){
 		this.toppings = new ArrayList<String>();
+	}
+	
+	public Salad(ArrayList<String> toppings){
+		this.toppings = toppings;
 	}
 	
 	public ArrayList<String> getToppings(){
