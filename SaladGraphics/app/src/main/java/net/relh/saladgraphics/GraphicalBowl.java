@@ -6,6 +6,10 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,9 +29,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
-public class GraphicalBowl extends Activity {
+public class GraphicalBowl extends Activity implements SensorEventListener {
+
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,61 +50,59 @@ public class GraphicalBowl extends Activity {
         // Defined Array values to show in ListView
         String[] bases = new String[]{
                 "Spinach",
-                "Romaine Lettuce",
-                "Iceberg Lettuce"
+                "Lettuce"
         };
         String[] proteins = new String[]{
-                "Diced Egg",
-                "Diced Ham",
-                "Bacon Bits",
+                "Egg",
+                "Ham",
+                "Bacon",
                 "Kidney Beans",
                 "Shrimp",
                 "Garbanzo Beans",
-                "Chicken Breast"
+                "Chicken"
         };
         String[] toppings = new String[]{
                 "Applesauce",
                 "Artichokes",
-                "Black Olives",
+                "Olives",
                 "Broccoli",
                 "Cauliflower",
-                "Cherry Tomatoes",
+                "Cherries",
+                "Tomatoes",
                 "Corn",
                 "Cottage Cheese",
                 "Craisins",
-                "Crispy Noodles",
+                "Noodles",
                 "Croutons",
                 "Feta Cheese",
                 "Gelatin",
-                "Gelatin Whip",
-                "Green Olives",
                 "Hummus",
                 "Jalapenos",
-                "Matchstick Carrots",
+                "Carrots",
                 "Mushrooms",
-                "Parmesan Cheese",
+                "Parmesan",
                 "Peas",
                 "Pepperoncini",
-                "Pickled Beets",
+                "Beets",
                 "Radishes",
                 "Raisins",
-                "Roasted Red Pepper",
-                "Shredded Mozzarella",
-                "Shredded Monterey Jack Cheese",
-                "Sliced Cucumber",
-                "Sliced Peaches",
-                "Sliced Red Onion",
-                "Stewed Prunes",
+                "Peppers",
+                "Mozzarella",
+                "Monterey Jack",
+                "Cucumbers",
+                "Peaches",
+                "Red Onion",
+                "Prunes",
                 "Strawberry Whip",
                 "Sunflower Seeds"
         };
 
         ArrayAdapter<String> baseAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, bases);
+                R.layout.salad_item, android.R.id.text1, bases);
         ArrayAdapter<String> proteinAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, proteins);
+                R.layout.salad_item, android.R.id.text1, proteins);
         ArrayAdapter<String> toppingAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, toppings);
+                R.layout.salad_item, android.R.id.text1, toppings);
 
         // Assign adapter to ListView
         baseList.setAdapter(baseAdapter);
@@ -116,7 +122,7 @@ public class GraphicalBowl extends Activity {
         toppingHeader.setText("Toppings:");
         toppingHeader.setBackgroundColor(Color.BLUE);
 
-        items = new ArrayList<ImageView>();
+        items = new HashMap<String, ImageView>();
         saladItemClickListener listener = new saladItemClickListener();
 
         // ListView Item Click Listener
@@ -127,8 +133,51 @@ public class GraphicalBowl extends Activity {
         // IMAGES
         layout = (GridLayout) findViewById(R.id.graphicLayout);
 
+        // SENSOR MANAGER
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null){
+            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        }
+
+        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
+    private static final int SHAKE_THRESHOLD = 800;
+
+    private float x, y, z, last_x, last_y, last_z;
+    long curTime;
+    long lastUpdate = 0;
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        curTime = System.currentTimeMillis();
+        if (lastUpdate == 0) { lastUpdate = curTime; }
+
+        // only allow one update every 100ms.
+        if ((curTime - lastUpdate) > 100) {
+            long diffTime = (curTime - lastUpdate);
+            lastUpdate = curTime;
+
+
+            x = event.values[0];
+            y = event.values[1];
+            z = event.values[2];
+
+            float speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
+
+            if (speed > SHAKE_THRESHOLD) {
+                Log.d("sensor", "shake detected w/ speed: " + speed);
+                Toast.makeText(this, "shake detected w/ speed: " + speed, Toast.LENGTH_SHORT).show();
+            }
+            last_x = x;
+            last_y = y;
+            last_z = z;
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -152,7 +201,7 @@ public class GraphicalBowl extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public ArrayList<ImageView> items;
+    public HashMap<String, ImageView> items;
     public GridLayout layout;
 
     public class saladItemClickListener implements AdapterView.OnItemClickListener {
@@ -162,7 +211,7 @@ public class GraphicalBowl extends Activity {
                                 int position, long id) {
 
             // ListView Clicked item index
-            int itemPosition     = position;
+            //int itemPosition     = position;
 
             // ListView Clicked item value
             String  itemValue    = (String) parent.getItemAtPosition(position);
@@ -170,17 +219,21 @@ public class GraphicalBowl extends Activity {
             itemValue = itemValue.replaceAll(" ", "_").toLowerCase();
 
             // Show Alert
-            Toast.makeText(getApplicationContext(),
-                    "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
-                    .show();
+            //Toast.makeText(getApplicationContext(),
+            //       "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
+            //        .show();
 
-            ImageView item = new ImageView(getApplicationContext());
-            item.setBackgroundResource(getResources().getIdentifier(itemValue, "drawable", getApplicationContext().getPackageName()));
+            if (!items.containsKey(itemValue)) {
+                ImageView item = new ImageView(getApplicationContext());
+                item.setBackgroundResource(getResources().getIdentifier(itemValue, "drawable", getApplicationContext().getPackageName()));
 
-            layout.addView(item);
-            items.add(item);
-
-            Log.i("array list of items", items.toString());
+                layout.addView(item);
+                items.put(itemValue, item);
+            } else {
+                layout.removeView(items.get(itemValue));
+                items.remove(itemValue);
+            }
+            //Log.i("array list of items", items.toString());
 
             //rocketAnimation = (AnimationDrawable) rocketImage.getBackground();
         }
