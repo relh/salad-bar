@@ -197,7 +197,6 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
     public void onPause() {	
     	super.onPause();
     	mSensorManager.unregisterListener(this, mSensor);
-    	mSensorManager = null;
     }
 
     private static final int SHAKE_THRESHOLD = 1000;
@@ -234,6 +233,7 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
                 Log.i("toppings being returned", toppings.toString());
                 result.putExtra(MainActivity.EXTRA_SALAD, toppings);
                 setResult(Activity.RESULT_OK, result);
+            	mSensorManager.unregisterListener(this, mSensor);
                 finish();
             }
             last_x = x;
