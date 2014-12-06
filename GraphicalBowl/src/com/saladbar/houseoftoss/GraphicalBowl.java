@@ -124,9 +124,14 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
         toppingHeader.setBackgroundColor(Color.BLUE);
 
         items = new HashMap<String, ImageView>();
- 
+        
+        // IMAGES
+        layout = (GridLayout) findViewById(R.id.graphicLayout);
+
+        // Add spoken toppings
         Intent intent = getIntent();
         ArrayList<String> spokenToppings = (ArrayList<String>) intent.getSerializableExtra(MainActivity.EXTRA_SALAD);
+        
         Log.i("Toppings:", spokenToppings.toString());
         
         for (int i = 0; i < spokenToppings.size(); i++) {
@@ -145,9 +150,6 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
         baseList.setOnItemClickListener(listener);
         proteinList.setOnItemClickListener(listener);
         toppingList.setOnItemClickListener(listener);
-
-        // IMAGES
-        layout = (GridLayout) findViewById(R.id.graphicLayout);
 
         // SENSOR MANAGER
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -207,7 +209,7 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        int id = item.getItemId();            
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {

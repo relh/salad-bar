@@ -66,9 +66,10 @@ public final class R {
         public static final int shrimp=0x7f020029;
         public static final int spinach=0x7f02002a;
         public static final int splash=0x7f02002b;
-        public static final int strawberry_whip=0x7f02002c;
-        public static final int sunflower_seeds=0x7f02002d;
-        public static final int tomatoes=0x7f02002e;
+        public static final int splash_red=0x7f02002c;
+        public static final int strawberry_whip=0x7f02002d;
+        public static final int sunflower_seeds=0x7f02002e;
+        public static final int tomatoes=0x7f02002f;
     }
     public static final class id {
         public static final int action_settings=0x7f080011;
