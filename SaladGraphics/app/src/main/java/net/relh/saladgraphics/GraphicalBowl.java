@@ -6,6 +6,10 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +32,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class GraphicalBowl extends Activity {
+public class GraphicalBowl extends Activity implements SensorEventListener {
+
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,8 +133,51 @@ public class GraphicalBowl extends Activity {
         // IMAGES
         layout = (GridLayout) findViewById(R.id.graphicLayout);
 
+        // SENSOR MANAGER
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null){
+            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        }
+
+        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
+    private static final int SHAKE_THRESHOLD = 800;
+
+    private float x, y, z, last_x, last_y, last_z;
+    long curTime;
+    long lastUpdate = 0;
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        curTime = System.currentTimeMillis();
+        if (lastUpdate == 0) { lastUpdate = curTime; }
+
+        // only allow one update every 100ms.
+        if ((curTime - lastUpdate) > 100) {
+            long diffTime = (curTime - lastUpdate);
+            lastUpdate = curTime;
+
+
+            x = event.values[0];
+            y = event.values[1];
+            z = event.values[2];
+
+            float speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
+
+            if (speed > SHAKE_THRESHOLD) {
+                Log.d("sensor", "shake detected w/ speed: " + speed);
+                Toast.makeText(this, "shake detected w/ speed: " + speed, Toast.LENGTH_SHORT).show();
+            }
+            last_x = x;
+            last_y = y;
+            last_z = z;
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -161,7 +211,7 @@ public class GraphicalBowl extends Activity {
                                 int position, long id) {
 
             // ListView Clicked item index
-            int itemPosition     = position;
+            //int itemPosition     = position;
 
             // ListView Clicked item value
             String  itemValue    = (String) parent.getItemAtPosition(position);
