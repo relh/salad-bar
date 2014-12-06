@@ -29,6 +29,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
+	public static String EXTRA_SALAD = "salad";
+	
+	
 	private final String FILE_NAME = "orders.txt";
 	
 	private String[] toppings = {"Spinach",
@@ -40,7 +43,7 @@ public class MainActivity extends Activity {
             "Shrimp",
             "Garbanzo Beans",
             "Chicken",
-           "Applesauce",
+            "Applesauce",
             "Artichokes",
             "Olives",
             "Broccoli",
@@ -76,6 +79,7 @@ public class MainActivity extends Activity {
 	
 	private static final int MENU_VOICE = Menu.FIRST;
 	private static final int VOICE_REQUEST_CODE = 1;
+	private static final int SALAD_REQUEST_CODE = 2;
 	
 	public SaladArrayAdapter mAdapter;
 	
@@ -123,8 +127,9 @@ public class MainActivity extends Activity {
     }
     
     private void LaunchSaladCreator(Salad salad){
-    	/*TODO: launch intent pass in salad*/
-    	mAdapter.add(salad);
+	    Intent intent = new Intent(this, GraphicalBowl.class);
+	    intent.putExtra(EXTRA_SALAD, salad.getToppings());
+	    startActivityForResult(intent, SALAD_REQUEST_CODE);
     }
     
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
