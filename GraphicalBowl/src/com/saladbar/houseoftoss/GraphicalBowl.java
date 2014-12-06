@@ -190,12 +190,14 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
     @Override
     public void onResume() {	
     	super.onResume();
+    	shakeStarted = false;
     	mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
     
     @Override
     public void onPause() {	
     	super.onPause();
+    	shakeStarted = true;
     	mSensorManager.unregisterListener(this, mSensor);
     }
 
