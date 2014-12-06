@@ -188,6 +188,13 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
 
         mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
+    
+    @Override
+    public void onPause() {
+    	
+    	mSensorManager.unregisterListener(this, mSensor);
+    	mSensorManager = null;
+    }
 
     private static final int SHAKE_THRESHOLD = 1000;
 
