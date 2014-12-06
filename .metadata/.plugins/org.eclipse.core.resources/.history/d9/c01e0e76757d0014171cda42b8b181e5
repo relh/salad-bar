@@ -30,15 +30,13 @@ public class SaladArrayAdapter extends BaseAdapter{
 	    LayoutInflater inflater = (LayoutInflater) context
 	        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	    
-	    Salad salad = mItems.get(position);
-	    
 	    View rowView = inflater.inflate(R.layout.salad_row, parent, false);
 	    ImageView saladImg = (ImageView) rowView.findViewById(R.id.salad_img);
 	    TextView toppings = (TextView) rowView.findViewById(R.id.toppings);
 	    TextView description = (TextView) rowView.findViewById(R.id.description);
 	    
-	    toppings.setText(salad.getToppingsString());
-	    description.setText("Price: " +  salad.getPrice() + " Ready: 5 Minutes");
+	    toppings.setText("test, test, test");
+	    description.setText("Price: 5.75     Ready: 5 Minutes");
 
 	    return rowView;
 	}
