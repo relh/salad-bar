@@ -185,13 +185,17 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null){
             mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         }
-
-        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
     
     @Override
-    public void onPause() {
-    	
+    public void onResume() {	
+    	super.onResume();
+    	mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+    
+    @Override
+    public void onPause() {	
+    	super.onPause();
     	mSensorManager.unregisterListener(this, mSensor);
     	mSensorManager = null;
     }
