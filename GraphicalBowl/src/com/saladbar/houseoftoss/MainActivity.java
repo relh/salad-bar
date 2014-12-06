@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
 	
 	private final String FILE_NAME = "orders.txt";
 	
-	private String[] toppings = {"Spinach",
+	private String[] toppings =  new String[]{"Spinach",
             "Lettuce",  
 			"Egg",
             "Ham",
