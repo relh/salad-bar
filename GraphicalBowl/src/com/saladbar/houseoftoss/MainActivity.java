@@ -239,11 +239,6 @@ public class MainActivity extends Activity {
     private void saveItems() {
         PrintWriter writer = null;
         try {
-				File dir = getFilesDir();
-				File file = new File(dir, FILE_NAME);
-				boolean deleted = file.delete();
-
-
                 FileOutputStream fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
                 writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
                                 fos)));
