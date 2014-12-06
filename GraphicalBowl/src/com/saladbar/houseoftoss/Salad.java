@@ -99,4 +99,8 @@ public class Salad{
 	public String getPrice(){
 		return String.format("$%2.2f", addPrice());
 	}
+	
+	public String getCalories() {
+		return Integer.toString(addCalories());
+	}
 }
