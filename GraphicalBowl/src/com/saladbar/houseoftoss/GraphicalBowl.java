@@ -143,12 +143,29 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
             layout.addView(item);
             items.put(itemValue, item);
             
-            //bases, proteins, toppings
+            // Highlights the voice selected options - should simplify this in the future
             for (int j = 0; j < 3; j++) {
             	switch(j) {
             	case 0:
             		for (int k = 0; k < bases.length; k++) {
-            			
+            			if (bases[k].equals(spokenToppings.get(i))) {
+            				baseList.setItemChecked(k, true);
+            				break;
+            			}
+            		}
+            	case 1:
+            		for (int k = 0; k < proteins.length; k++) {
+            			if (proteins[k].equals(spokenToppings.get(i))) {
+            				proteinList.setItemChecked(k, true);
+            				break;
+            			}
+            		}
+            	case 2:
+            		for (int k = 0; k < toppings.length; k++) {
+            			if (toppings[k].equals(spokenToppings.get(i))) {
+            				toppingList.setItemChecked(k, true);
+            				break;
+            			}
             		}
             	}
             }
