@@ -129,6 +129,7 @@ public class MainActivity extends Activity {
     
     private void LaunchSaladCreator(Salad salad){
 	    Intent intent = new Intent(this, GraphicalBowl.class);
+	    Log.i("Toppings before:", sentence.toString());
 	    intent.putExtra(EXTRA_SALAD, salad.getToppings());
 	    startActivityForResult(intent, SALAD_REQUEST_CODE);
     }
