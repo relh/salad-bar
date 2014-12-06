@@ -135,13 +135,14 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
         Log.i("Toppings:", spokenToppings.toString());
         
         for (int i = 0; i < spokenToppings.size(); i++) {
-            String itemValue = spokenToppings.get(i).replaceAll(" ", "_").toLowerCase();
+            String itemKey = spokenToppings.get(i).substring(0,1).toUpperCase() + spokenToppings.get(i).substring(1);
+        	String imageSource = itemKey.replaceAll(" ", "_").toLowerCase();
         	
         	ImageView item = new ImageView(getApplicationContext());
-            item.setBackgroundResource(getResources().getIdentifier(itemValue, "drawable", getApplicationContext().getPackageName()));
+            item.setBackgroundResource(getResources().getIdentifier(imageSource, "drawable", getApplicationContext().getPackageName()));
 
             layout.addView(item);
-            items.put(itemValue, item);
+            items.put(itemKey, item);
             
             // Highlights the voice selected options - should simplify this in the future
             for (int j = 0; j < 3; j++) {
@@ -188,7 +189,7 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
         mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    private static final int SHAKE_THRESHOLD = 800;
+    private static final int SHAKE_THRESHOLD = 1000;
 
     private float x, y, z, last_x, last_y, last_z;
     long curTime;
@@ -214,6 +215,14 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
             if (speed > SHAKE_THRESHOLD) {
                 Log.d("sensor", "shake detected w/ speed: " + speed);
                 Toast.makeText(this, "shake detected w/ speed: " + speed, Toast.LENGTH_SHORT).show();
+                
+                // Create intent to deliver some kind of result data
+                Intent result = new Intent();
+                ArrayList<String> toppings = new ArrayList<String>(items.keySet());
+                Log.i("toppings being returned", toppings.toString());
+                result.putExtra(MainActivity.EXTRA_SALAD, toppings);
+                setResult(Activity.RESULT_OK, result);
+                finish();
             }
             last_x = x;
             last_y = y;
@@ -259,24 +268,23 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
             //int itemPosition     = position;
 
             // ListView Clicked item value
-            String  itemValue    = (String) parent.getItemAtPosition(position);
-
-            itemValue = itemValue.replaceAll(" ", "_").toLowerCase();
+            String itemKey    = (String) parent.getItemAtPosition(position);
+            String imageSource = itemKey.replaceAll(" ", "_").toLowerCase();
 
             // Show Alert
             //Toast.makeText(getApplicationContext(),
             //       "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
             //        .show();
 
-            if (!items.containsKey(itemValue)) {
+            if (!items.containsKey(itemKey)) {
                 ImageView item = new ImageView(getApplicationContext());
-                item.setBackgroundResource(getResources().getIdentifier(itemValue, "drawable", getApplicationContext().getPackageName()));
+                item.setBackgroundResource(getResources().getIdentifier(imageSource, "drawable", getApplicationContext().getPackageName()));
 
                 layout.addView(item);
-                items.put(itemValue, item);
+                items.put(itemKey, item);
             } else {
-                layout.removeView(items.get(itemValue));
-                items.remove(itemValue);
+                layout.removeView(items.get(itemKey));
+                items.remove(itemKey);
             }
             //Log.i("array list of items", items.toString());
 
