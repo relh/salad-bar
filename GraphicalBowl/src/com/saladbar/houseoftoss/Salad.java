@@ -34,7 +34,7 @@ public class Salad{
 	}
 	
 	public String toString() {
-		return ""; 
+		return getToppingsString(); 
 	}
 	
 	public String toLog() {
@@ -46,7 +46,7 @@ public class Salad{
 		for(int i = 0; i < toppings.size(); i++){
 			res += toppings.get(i);
 			if(i < toppings.size() - 1){
-				res += ",";
+				res += ", ";
 			}
 		}
 		return res;
