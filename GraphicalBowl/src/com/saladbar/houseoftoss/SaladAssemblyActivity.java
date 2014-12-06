@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -44,10 +45,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class GraphicalBowl extends Activity implements SensorEventListener {
+public class SaladAssemblyActivity extends Activity implements SensorEventListener {
 
     private SensorManager mSensorManager;
     private Sensor mSensor;
+    
+    private RelativeLayout relativeLayout;
+    private int layoutWidth;
+    private int layoutHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +60,20 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
         setContentView(R.layout.activity_graphical_bowl);
         
         // GRAPHICAL VIEW
-		RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.graphicLayout);
-		final ToppingView bubbleView = new ToppingView(getApplicationContext(),
-				BitmapFactory.decodeResource(getResources(), R.drawable.broccoli));
+		final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.graphicLayout);
+		
+		relativeLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
-		relativeLayout.addView(bubbleView);
+	        @Override
+	        public void onGlobalLayout() {
+	        	relativeLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+	    		layoutWidth = relativeLayout.getWidth();
+	    		layoutHeight = relativeLayout.getHeight();
+	        
+	    		System.out.println(layoutWidth + " " + layoutHeight);
+	        }
+	    });
         
         // LISTVIEWS
         final ListView baseList = (ListView) findViewById(R.id.base);
@@ -141,14 +155,14 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
         toppingHeader.setText("Toppings:");
         toppingHeader.setBackgroundColor(Color.BLUE);
 
-        items = new HashMap<String, ImageView>();
+        items = new HashMap<String, ToppingView>();
         
         // IMAGES
         //layout = (GridLayout) findViewById(R.id.graphicLayout);
 
         // Add spoken toppings
         Intent intent = getIntent();
-        ArrayList<String> spokenToppings = (ArrayList<String>) intent.getSerializableExtra(MainActivity.EXTRA_SALAD);
+        ArrayList<String> spokenToppings = (ArrayList<String>) intent.getSerializableExtra(OrderActivity.EXTRA_SALAD);
         
         Log.i("Toppings:", spokenToppings.toString());
         
@@ -156,9 +170,9 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
             String itemKey = spokenToppings.get(i).substring(0,1).toUpperCase() + spokenToppings.get(i).substring(1);
         	String imageSource = itemKey.replaceAll(" ", "_").toLowerCase();
         	
-        	ImageView item = new ImageView(getApplicationContext());
-            item.setBackgroundResource(getResources().getIdentifier(imageSource, "drawable", getApplicationContext().getPackageName()));
+            ToppingView item = getToppingView(imageSource);
 
+            RelativeLayout layout = (RelativeLayout) findViewById(R.id.graphicLayout);
             layout.addView(item);
             items.put(itemKey, item);
             
@@ -254,7 +268,7 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
                 Intent result = new Intent();
                 ArrayList<String> toppings = new ArrayList<String>(items.keySet());
                 Log.i("toppings being returned", toppings.toString());
-                result.putExtra(MainActivity.EXTRA_SALAD, toppings);
+                result.putExtra(OrderActivity.EXTRA_SALAD, toppings);
                 setResult(Activity.RESULT_OK, result);
             	mSensorManager.unregisterListener(this, mSensor);
                 finish();
@@ -290,8 +304,7 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
         return super.onOptionsItemSelected(item);
     }
 
-    public HashMap<String, ImageView> items;
-    public GridLayout layout;
+    public HashMap<String, ToppingView> items;
 
     public class saladItemClickListener implements AdapterView.OnItemClickListener {
 
@@ -312,13 +325,13 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
             //        .show();
 
             if (!items.containsKey(itemKey)) {
-                ImageView item = new ImageView(getApplicationContext());
-                item.setBackgroundResource(getResources().getIdentifier(imageSource, "drawable", getApplicationContext().getPackageName()));
+                ToppingView item = getToppingView(imageSource);
 
+                RelativeLayout layout = (RelativeLayout) findViewById(R.id.graphicLayout);
                 layout.addView(item);
                 items.put(itemKey, item);
             } else {
-                layout.removeView(items.get(itemKey));
+            	relativeLayout.removeView(items.get(itemKey));
                 items.remove(itemKey);
             }
             //Log.i("array list of items", items.toString());
@@ -327,12 +340,18 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
         }
     }
     
+    public ToppingView getToppingView(String imageSource) {
+		ToppingView toppingView = new ToppingView(getApplicationContext(),
+				BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(imageSource, "drawable", getApplicationContext().getPackageName())));
+		System.out.println(toppingView);
+		return toppingView;
+    }
+    
     private class ToppingView extends SurfaceView implements
 	SurfaceHolder.Callback {
 		
 		private final Bitmap mBitmap;
 		private final int mBitmapHeightAndWidth, mBitmapHeightAndWidthAdj;
-		private final DisplayMetrics mDisplay;
 		private final int mDisplayWidth, mDisplayHeight;
 		private float mX, mY, mDx, mDy, mRotation;
 		private final SurfaceHolder mSurfaceHolder;
@@ -352,11 +371,8 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
 		
 			mBitmapHeightAndWidthAdj = mBitmapHeightAndWidth / 2;
 		
-			mDisplay = new DisplayMetrics();
-			GraphicalBowl.this.getWindowManager().getDefaultDisplay()
-					.getMetrics(mDisplay);
-			mDisplayWidth = mDisplay.widthPixels;
-			mDisplayHeight = mDisplay.heightPixels;
+			mDisplayWidth = layoutWidth;
+			mDisplayHeight = layoutHeight;
 		
 			Random r = new Random();
 			mX = (float) r.nextInt(mDisplayHeight);
@@ -373,7 +389,7 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
 			mSurfaceHolder.addCallback(this);
 		}
 		
-		private void drawBubble(Canvas canvas) {
+		private void drawTopping(Canvas canvas) {
 			canvas.drawColor(Color.DKGRAY);
 			mRotation += ROT_STEP;
 			canvas.rotate(mRotation, mY + mBitmapHeightAndWidthAdj, mX
@@ -407,7 +423,7 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
 					while (!Thread.currentThread().isInterrupted() && move()) {
 						canvas = mSurfaceHolder.lockCanvas();
 						if (null != canvas) {
-							drawBubble(canvas);
+							drawTopping(canvas);
 							mSurfaceHolder.unlockCanvasAndPost(canvas);
 						}
 					}

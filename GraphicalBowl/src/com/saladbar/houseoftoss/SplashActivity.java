@@ -24,7 +24,7 @@ public class SplashActivity extends Activity {
                 Log.i(TAG,
                         "Entered splash page");
                 
-                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                Intent intent = new Intent(SplashActivity.this, OrderActivity.class);
                 startActivity(intent);
                 finish();
             }

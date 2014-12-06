@@ -32,7 +32,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class OrderActivity extends Activity {
 	public static String EXTRA_SALAD = "salad";
 	
 	private final String FILE_NAME = "orders.txt";
@@ -130,7 +130,7 @@ public class MainActivity extends Activity {
     }
     
     private void LaunchSaladCreator(Salad salad){
-	    Intent intent = new Intent(this, GraphicalBowl.class);
+	    Intent intent = new Intent(this, SaladAssemblyActivity.class);
 	    intent.putExtra(EXTRA_SALAD, salad.getToppings());
 	    startActivityForResult(intent, SALAD_REQUEST_CODE);
     }

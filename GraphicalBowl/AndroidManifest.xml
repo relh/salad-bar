@@ -21,11 +21,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.saladbar.houseoftoss.MainActivity"
+            android:name="com.saladbar.houseoftoss.OrderActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.saladbar.houseoftoss.GraphicalBowl"
+            android:name="com.saladbar.houseoftoss.SaladAssemblyActivity"
+            android:label="@string/app_name" >
+        </activity>
+		<activity
+            android:name="com.saladbar.houseoftoss.GraphicalSaladActivity"
             android:label="@string/app_name" >
         </activity>
     </application>
