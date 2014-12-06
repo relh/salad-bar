@@ -25,11 +25,11 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.saladbar.houseoftoss.SaladAssemblyActivity"
+            android:name="com.saladbar.houseoftoss.AssemblyActivity"
             android:label="@string/app_name" >
         </activity>
 		<activity
-            android:name="com.saladbar.houseoftoss.GraphicalSaladActivity"
+            android:name="com.saladbar.houseoftoss.DisplayActivity"
             android:label="@string/app_name" >
         </activity>
     </application>

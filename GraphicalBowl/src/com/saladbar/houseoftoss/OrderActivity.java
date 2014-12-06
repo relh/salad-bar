@@ -130,7 +130,7 @@ public class OrderActivity extends Activity {
     }
     
     private void LaunchSaladCreator(Salad salad){
-	    Intent intent = new Intent(this, SaladAssemblyActivity.class);
+	    Intent intent = new Intent(this, AssemblyActivity.class);
 	    intent.putExtra(EXTRA_SALAD, salad.getToppings());
 	    startActivityForResult(intent, SALAD_REQUEST_CODE);
     }

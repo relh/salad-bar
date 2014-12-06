@@ -45,7 +45,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class GraphicalSaladActivity extends Activity implements SensorEventListener {
+public class DisplayActivity extends Activity implements SensorEventListener {
 
     private SensorManager mSensorManager;
     private Sensor mSensor;
