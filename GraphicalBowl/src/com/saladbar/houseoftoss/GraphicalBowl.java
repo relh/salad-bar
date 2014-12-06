@@ -199,7 +199,7 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
     	mSensorManager.unregisterListener(this, mSensor);
     }
 
-    private static final int SHAKE_THRESHOLD = 800;
+    private static final int SHAKE_THRESHOLD = 1000;
 
     private float x, y, z, last_x, last_y, last_z;
     long curTime;
