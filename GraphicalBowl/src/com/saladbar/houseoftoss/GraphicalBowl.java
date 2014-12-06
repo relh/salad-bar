@@ -2,6 +2,7 @@ package com.saladbar.houseoftoss;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -41,7 +42,7 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graphical_bowl);
-
+        
         // LISTVIEWS
         final ListView baseList = (ListView) findViewById(R.id.base);
         final ListView proteinList = (ListView) findViewById(R.id.protein);
@@ -123,6 +124,20 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
         toppingHeader.setBackgroundColor(Color.BLUE);
 
         items = new HashMap<String, ImageView>();
+ 
+        Intent intent = getIntent();
+        ArrayList<String> spokenToppings = (ArrayList<String>) intent.getSerializableExtra(MainActivity.EXTRA_SALAD);
+        
+        for (int i = 0; i < spokenToppings.size(); i++) {
+            String itemValue = spokenToppings.get(i).replaceAll(" ", "_").toLowerCase();
+        	
+        	ImageView item = new ImageView(getApplicationContext());
+            item.setBackgroundResource(getResources().getIdentifier(itemValue, "drawable", getApplicationContext().getPackageName()));
+
+            layout.addView(item);
+            items.put(itemValue, item);
+        }
+        
         saladItemClickListener listener = new saladItemClickListener();
 
         // ListView Item Click Listener

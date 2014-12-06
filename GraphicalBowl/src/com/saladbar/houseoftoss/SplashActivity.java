@@ -1,4 +1,4 @@
-package net.relh.saladgraphics;
+package com.saladbar.houseoftoss;
 
 import android.app.Activity;
 import android.content.Intent;
