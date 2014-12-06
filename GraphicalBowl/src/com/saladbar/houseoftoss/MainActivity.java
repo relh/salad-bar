@@ -12,6 +12,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.speech.RecognizerIntent;
 import android.app.Activity;
@@ -32,7 +34,6 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	public static String EXTRA_SALAD = "salad";
-	
 	
 	private final String FILE_NAME = "orders.txt";
 	

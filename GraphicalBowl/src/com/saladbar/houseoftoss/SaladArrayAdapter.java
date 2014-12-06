@@ -2,8 +2,11 @@ package com.saladbar.houseoftoss;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +19,10 @@ public class SaladArrayAdapter extends BaseAdapter{
     private final Context context;
     private final ArrayList<Salad> mItems = new ArrayList<Salad>();
   
-  
 	public SaladArrayAdapter(Context context) {
 	    this.context = context;
 	}
+	
 	public void add(Salad item) {
         mItems.add(item);
         notifyDataSetChanged();
@@ -38,11 +41,16 @@ public class SaladArrayAdapter extends BaseAdapter{
 	    TextView description = (TextView) rowView.findViewById(R.id.description);
 	    
 	    toppings.setText(salad.getToppingsString());
-	    description.setText("Price: " +  salad.getPrice() + " Ready: 5 Minutes");
+	    description.setText("Price: " +  salad.getPrice() + " Ready: " + salad.getReady());
 
 	    return rowView;
 	}
 
+	public void clearAll(){
+		mItems.clear();
+		notifyDataSetChanged();
+	}
+	
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub

@@ -1,22 +1,32 @@
 package com.saladbar.houseoftoss;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class Salad{
 	public static final String ITEM_SEP = System.getProperty("line.separator");
 	private ArrayList<String> toppings;
+	private Date ready;
 	
 	public Salad(){
 		this.toppings = new ArrayList<String>();
+		this.ready = new Date();
+		Log.d("test", this.ready.toString());
 	}
 	
 	public Salad(ArrayList<String> toppings){
 		this.toppings = toppings;
+		this.ready = new Date();
 	}
 	
+	public void SetDate(Date date){
+		this.ready = date;
+	}
 	public ArrayList<String> getToppings(){
 		return this.toppings;
 	}
@@ -50,6 +60,11 @@ public class Salad{
 			}
 		}
 		return res;
+	}
+	
+	public String getReady(){
+		DateFormat df = new DateFormat();
+		return (String) df.format("MMM-dd-yyyy hh:mm a", this.ready);
 	}
 	
 	public String getPrice(){
