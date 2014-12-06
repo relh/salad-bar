@@ -195,6 +195,7 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
     long curTime;
     long lastUpdate = 0;
 
+    // Shakes insta close the activity
     @Override
     public void onSensorChanged(SensorEvent event) {
         curTime = System.currentTimeMillis();
