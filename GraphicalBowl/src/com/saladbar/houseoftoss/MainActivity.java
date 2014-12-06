@@ -129,7 +129,6 @@ public class MainActivity extends Activity {
     
     private void LaunchSaladCreator(Salad salad){
 	    Intent intent = new Intent(this, GraphicalBowl.class);
-	    Log.i("Toppings before:", sentence.toString());
 	    intent.putExtra(EXTRA_SALAD, salad.getToppings());
 	    startActivityForResult(intent, SALAD_REQUEST_CODE);
     }
@@ -140,15 +139,13 @@ public class MainActivity extends Activity {
         	if(resultCode == RESULT_OK) {
 	        	String sent = "";
 	        	ArrayList<String> sentence = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-	        	Log.i("Toppings before:", sentence.toString());
-	    	    
 	        	for(int i =0; i < sentence.size(); i++){
 	        		String word = sentence.get(i);
 	        		sent += word + " ";
 	        	}
 	        	for(int i =0; i < toppings.length; i++){
 	        		String topping = toppings[i];
-	        		if(sent.contains(topping)){
+	        		if(sent.contains(topping.toLowerCase())){
 	        			salad.toggleSaladTopping(topping);
 	        		}
 	        	}
