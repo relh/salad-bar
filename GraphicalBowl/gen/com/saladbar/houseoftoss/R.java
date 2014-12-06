@@ -65,12 +65,13 @@ public final class R {
         public static final int salad=0x7f020028;
         public static final int shrimp=0x7f020029;
         public static final int spinach=0x7f02002a;
-        public static final int strawberry_whip=0x7f02002b;
-        public static final int sunflower_seeds=0x7f02002c;
-        public static final int tomatoes=0x7f02002d;
+        public static final int splash=0x7f02002b;
+        public static final int strawberry_whip=0x7f02002c;
+        public static final int sunflower_seeds=0x7f02002d;
+        public static final int tomatoes=0x7f02002e;
     }
     public static final class id {
-        public static final int action_settings=0x7f080010;
+        public static final int action_settings=0x7f080011;
         public static final int base=0x7f080004;
         public static final int baseHeader=0x7f080003;
         public static final int bottomLayout=0x7f080001;
@@ -83,6 +84,7 @@ public final class R {
         public static final int protein=0x7f080006;
         public static final int proteinHeader=0x7f080005;
         public static final int salad_img=0x7f08000e;
+        public static final int splashscreen=0x7f080010;
         public static final int textView=0x7f08000d;
         public static final int textView1=0x7f08000b;
         public static final int toppingHeader=0x7f080007;
@@ -94,6 +96,7 @@ public final class R {
         public static final int header_text=0x7f030002;
         public static final int salad_item=0x7f030003;
         public static final int salad_row=0x7f030004;
+        public static final int splash=0x7f030005;
     }
     public static final class menu {
         public static final int graphical_bowl=0x7f070000;
