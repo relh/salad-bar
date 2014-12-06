@@ -127,6 +127,7 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
  
         Intent intent = getIntent();
         ArrayList<String> spokenToppings = (ArrayList<String>) intent.getSerializableExtra(MainActivity.EXTRA_SALAD);
+        Log.i("Toppings:", spokenToppings.toString());
         
         for (int i = 0; i < spokenToppings.size(); i++) {
             String itemValue = spokenToppings.get(i).replaceAll(" ", "_").toLowerCase();

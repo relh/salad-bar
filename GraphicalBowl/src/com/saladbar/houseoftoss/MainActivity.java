@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.speech.RecognizerIntent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -138,6 +139,8 @@ public class MainActivity extends Activity {
         	if(resultCode == RESULT_OK) {
 	        	String sent = "";
 	        	ArrayList<String> sentence = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+	        	Log.i("Toppings before:", sentence.toString());
+	    	    
 	        	for(int i =0; i < sentence.size(); i++){
 	        		String word = sentence.get(i);
 	        		sent += word + " ";
