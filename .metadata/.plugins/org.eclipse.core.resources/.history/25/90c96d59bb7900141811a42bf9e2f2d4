@@ -1,0 +1,9 @@
+package cmsc436.GroupProject;
+
+public class SaladTopping {
+    private String name;
+    private Float price;
+    private String imagSrc;
+    
+    public SaladToping
+}

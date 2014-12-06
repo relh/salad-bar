@@ -1,0 +1,7 @@
+package cmsc436.GroupProject;
+
+import android.widget.ArrayAdapter;
+
+public class SaladArrayAdapter extends ArrayAdapter {
+
+}

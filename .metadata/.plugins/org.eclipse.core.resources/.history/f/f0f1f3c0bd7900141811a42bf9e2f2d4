@@ -1,0 +1,25 @@
+package cmsc436.GroupProject;
+
+public class SaladTopping {
+    private String name;
+    private Float price;
+    private String imageSrc;
+    
+    public SaladTopping(String name, Float price, String src){
+    	this.name = name;
+    	this.price = price;
+    	this.imageSrc = src;
+    }
+    
+    public String getName(){
+    	return this.name;
+    }
+    
+    public Float getPrice(){
+    	return this.price;
+    }
+    
+    public String getImgSrc(){
+    	return this.imageSrc;
+    }
+}

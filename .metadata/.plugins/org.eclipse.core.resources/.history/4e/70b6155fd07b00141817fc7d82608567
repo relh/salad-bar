@@ -1,0 +1,48 @@
+package cmsc436.GroupProject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+public class SaladArrayAdapter extends ArrayAdapter<Salad> {
+  private final Context context;
+  private final Salad[] values;
+  ArrayList<Salad> saladList;
+  
+	public SaladArrayAdapter(Context context, Salad[] values) {
+	    super(context, R.layout.salad_row, values);
+	    this.context = context;
+	    this.values = values;
+	    saladList = new ArrayList<Salad>();
+	}
+	
+	public void add(Salad listItem) {
+		saladList.add(listItem);
+	}
+
+	public ArrayList<Salad> getList() {
+		return saladList;
+	}
+	
+	public View getView(int position, View convertView, ViewGroup parent) {
+	    LayoutInflater inflater = (LayoutInflater) context
+	        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	    
+	    View rowView = inflater.inflate(R.layout.salad_row, parent, false);
+	    ImageView saladImg = (ImageView) rowView.findViewById(R.id.salad_img);
+	    TextView toppings = (TextView) rowView.findViewById(R.id.toppings);
+	    TextView description = (TextView) rowView.findViewById(R.id.description);
+	    
+	    toppings.setText("test, test, test");
+	    description.setText("Price: 5.75     Ready: 5 Minutes");
+
+	    return rowView;
+	  }
+}
