@@ -16,12 +16,20 @@ public class Salad{
 	
 	public Salad(){
 		this.toppings = new ArrayList<String>();
+		this.details = new ArrayList<SaladTopping>();
 		this.ready = new Date();
 		Log.d("test", this.ready.toString());
 	}
 	
 	public Salad(ArrayList<String> toppings){
 		this.toppings = toppings;
+		this.details = new ArrayList<SaladTopping>();
+		if (!toppings.isEmpty()) {
+			for (String s : toppings) {
+				SaladTopping t = new SaladTopping(s);
+				this.details.add(t);
+			}
+		}
 		this.ready = new Date();
 	}
 	
@@ -40,18 +48,9 @@ public class Salad{
 		}
 	}
 	
-	public void stringToItem () {
-		if (!toppings.isEmpty()) {
-			for (String s : toppings) {
-				SaladTopping t = new SaladTopping(s);
-				details.add(t);
-			}
-		}
-	}
 	
 	public double addPrice () {
 		double total = 0;
-		stringToItem();
 		if(!details.isEmpty()) {
 			for(SaladTopping t : details) 
 				total += t.getPrice();
@@ -61,7 +60,6 @@ public class Salad{
 	
 	public int getCalories () {
 		int fat = 0;
-		stringToItem();
 		if(!details.isEmpty()) {
 			for(SaladTopping t : details) 
 				fat += t.getCalories();
@@ -98,9 +96,5 @@ public class Salad{
 	
 	public String getPrice(){
 		return String.format("$%2.2f", addPrice());
-	}
-	
-	public String getCalories() {
-		return Integer.toString(addCalories());
 	}
 }
