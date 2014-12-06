@@ -12,6 +12,7 @@ public class Salad{
 	public static final String ITEM_SEP = System.getProperty("line.separator");
 	private ArrayList<String> toppings;
 	private Date ready;
+	private ArrayList<SaladTopping> details;
 	
 	public Salad(){
 		this.toppings = new ArrayList<String>();
@@ -39,6 +40,34 @@ public class Salad{
 		}
 	}
 	
+	public void stringToItem () {
+		if (!toppings.isEmpty()) {
+			for (String s : toppings) {
+				SaladTopping t = new SaladTopping(s);
+				details.add(t);
+			}
+		}
+	}
+	
+	public double addPrice () {
+		double total = 0;
+		stringToItem();
+		if(!details.isEmpty()) {
+			for(SaladTopping t : details) 
+				total += t.getPrice();
+		}
+		return total;
+	}
+	
+	public int getCalories () {
+		int fat = 0;
+		stringToItem();
+		if(!details.isEmpty()) {
+			for(SaladTopping t : details) 
+				fat += t.getCalories();
+		}
+		return fat;
+	}
 	public boolean hasTopping(String topping){
 		return this.toppings.contains(topping);
 	}
@@ -68,6 +97,6 @@ public class Salad{
 	}
 	
 	public String getPrice(){
-		return String.format("$%2.2f", (5.75 + toppings.size() * .50));
+		return String.format("$%2.2f", addPrice());
 	}
 }
