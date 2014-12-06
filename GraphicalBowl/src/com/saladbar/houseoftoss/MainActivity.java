@@ -168,6 +168,14 @@ public class MainActivity extends Activity {
 		    	
 		    }
         }
+        
+        if (requestCode == SALAD_REQUEST_CODE){
+        	if(resultCode == RESULT_OK) {
+        	    ArrayList<String> tops = data.getStringArrayListExtra(EXTRA_SALAD);
+        	    mAdapter.add(new Salad(tops));
+        	}
+        }
+        
 	    super.onActivityResult(requestCode, resultCode, data);
     }
     		
@@ -206,7 +214,13 @@ public class MainActivity extends Activity {
                 while (null != (salad = reader.readLine())) {
                 /*        name = reader.readLine();
                         country = reader.readLine();*/
-                        mAdapter.add(new Salad());
+                	    Log.d("test", "Toppings: " + salad);
+                	    Salad salObj = new Salad();
+                	    String[] temp = salad.split(", ");
+                	    for(int i =0; i < temp.length; i++){
+                	    	salObj.toggleSaladTopping(temp[i]);
+                	    }
+                        mAdapter.add(salObj);
                 }
 
         } catch (FileNotFoundException e) {

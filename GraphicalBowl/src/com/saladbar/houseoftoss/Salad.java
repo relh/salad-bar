@@ -34,11 +34,11 @@ public class Salad{
 	}
 	
 	public String toString() {
-        return "Salad";
+		return getToppingsString() + ITEM_SEP; 
 	}
 	
 	public String toLog() {
-		    return "order:1" + ITEM_SEP; 
+		    return getToppingsString() + ITEM_SEP; 
 	}
 	
 	public String getToppingsString(){
