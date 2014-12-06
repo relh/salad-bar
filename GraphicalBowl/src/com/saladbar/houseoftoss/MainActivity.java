@@ -2,6 +2,7 @@ package com.saladbar.houseoftoss;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -212,9 +213,6 @@ public class MainActivity extends Activity {
 
                 String salad = null;
                 while (null != (salad = reader.readLine())) {
-                /*        name = reader.readLine();
-                        country = reader.readLine();*/
-                	    Log.d("test", "Toppings: " + salad);
                 	    Salad salObj = new Salad();
                 	    String[] temp = salad.split(", ");
                 	    for(int i =0; i < temp.length; i++){
@@ -241,6 +239,11 @@ public class MainActivity extends Activity {
     private void saveItems() {
         PrintWriter writer = null;
         try {
+				File dir = getFilesDir();
+				File file = new File(dir, FILE_NAME);
+				boolean deleted = file.delete();
+
+
                 FileOutputStream fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
                 writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
                                 fos)));

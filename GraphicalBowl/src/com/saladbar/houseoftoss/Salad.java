@@ -34,7 +34,7 @@ public class Salad{
 	}
 	
 	public String toString() {
-		return getToppingsString() + ITEM_SEP; 
+		return ""; 
 	}
 	
 	public String toLog() {
