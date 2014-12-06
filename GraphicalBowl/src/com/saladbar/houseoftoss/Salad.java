@@ -43,8 +43,13 @@ public class Salad{
 	public void toggleSaladTopping(String topping){
 		if(this.toppings.contains(topping)){
 			toppings.remove(topping);
+			for(SaladTopping t : details) {
+				if(t.getName().equals(topping))
+					details.remove(t);
+			}
 		}else{
 			toppings.add(topping);
+			details.add(new SaladTopping(topping));
 		}
 	}
 	
