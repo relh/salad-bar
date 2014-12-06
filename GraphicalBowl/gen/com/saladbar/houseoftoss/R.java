@@ -92,7 +92,7 @@ public final class R {
         public static final int toppings=0x7f080008;
     }
     public static final class layout {
-        public static final int activity_graphical_bowl=0x7f030000;
+        public static final int activity_assembly=0x7f030000;
         public static final int activity_main=0x7f030001;
         public static final int header_text=0x7f030002;
         public static final int salad_item=0x7f030003;
