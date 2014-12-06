@@ -111,7 +111,7 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
         toppingList.setAdapter(toppingAdapter);
 
         // Add headers
-        final TextView baseHeader = (TextView) findViewById(R.id.baseHeader);
+        TextView baseHeader = (TextView) findViewById(R.id.baseHeader);
         baseHeader.setText("Bases:");
         baseHeader.setBackgroundColor(Color.RED);
 
@@ -142,6 +142,16 @@ public class GraphicalBowl extends Activity implements SensorEventListener {
 
             layout.addView(item);
             items.put(itemValue, item);
+            
+            //bases, proteins, toppings
+            for (int j = 0; j < 3; j++) {
+            	switch(j) {
+            	case 0:
+            		for (int k = 0; k < bases.length; k++) {
+            			
+            		}
+            	}
+            }
         }
         
         saladItemClickListener listener = new saladItemClickListener();
