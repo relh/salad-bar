@@ -41,6 +41,7 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Shake to Taste!");
         setContentView(R.layout.activity_assembly);
         
         // LISTVIEWS
