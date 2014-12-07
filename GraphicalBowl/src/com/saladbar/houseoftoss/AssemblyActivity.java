@@ -35,14 +35,42 @@ import java.util.HashMap;
 
 public class AssemblyActivity extends Activity implements SensorEventListener {
 
+    public HashMap<String, ImageView> items;
+    public GridLayout layout;
+    int calories = 0;
+    TextView calorieView;
+    double price = 0;
+    TextView priceView;
+    
+    // Shake variables
+    private static final int SHAKE_THRESHOLD = 800;
+    private float x, y, z, last_x, last_y, last_z;
+    long curTime;
+    long lastUpdate = 0;
+    boolean shakeStarted = false;
     private SensorManager mSensorManager;
     private Sensor mSensor;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("Shake to Taste!");
+        setTitle("Shake your phone to place an order");
         setContentView(R.layout.activity_assembly);
+        
+        // HEADERS
+        TextView instructions = (TextView) findViewById(R.id.instructions);
+        instructions.setText("Shake to Confirm your Salad!");
+        
+        calories = 0;
+        calorieView = (TextView) findViewById(R.id.calorieView);
+        calorieView.setText("0 cal");
+        
+        price = 0;
+        priceView = (TextView) findViewById(R.id.priceView);
+        priceView.setText("$0.00");
+        
+        // IMAGES
+        layout = (GridLayout) findViewById(R.id.graphicLayout);
         
         // LISTVIEWS
         final ListView baseList = (ListView) findViewById(R.id.base);
@@ -129,14 +157,9 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
 
         items = new HashMap<String, ImageView>();
         
-        // IMAGES
-        layout = (GridLayout) findViewById(R.id.graphicLayout);
-
-        // Add spoken toppings
+        // SPOKEN TOPPINGS
         Intent intent = getIntent();
         ArrayList<String> spokenToppings = (ArrayList<String>) intent.getSerializableExtra(OrderActivity.EXTRA_SALAD);
-        
-        Log.i("Toppings:", spokenToppings.toString());
         
         for (int i = 0; i < spokenToppings.size(); i++) {
             String itemKey = spokenToppings.get(i).substring(0,1).toUpperCase() + spokenToppings.get(i).substring(1);
@@ -145,8 +168,7 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
         	ImageView item = new ImageView(getApplicationContext());
             item.setBackgroundResource(getResources().getIdentifier(imageSource, "drawable", getApplicationContext().getPackageName()));
 
-            layout.addView(item);
-            items.put(itemKey, item);
+            addToppingToSalad(itemKey, imageSource);
             
             // Highlights the voice selected options - should simplify this in the future
             for (int j = 0; j < 3; j++) {
@@ -182,19 +204,34 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
         baseList.setOnItemClickListener(listener);
         proteinList.setOnItemClickListener(listener);
         toppingList.setOnItemClickListener(listener);
+        
+    }
+    
+    public void addToppingToSalad(String itemKey, String imageSource) {
+    	ImageView item = new ImageView(getApplicationContext());
+        item.setBackgroundResource(getResources().getIdentifier(imageSource, "drawable", getApplicationContext().getPackageName()));
 
-        // SENSOR MANAGER
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
-        if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null){
-            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        }
+        calories += new SaladTopping(itemKey).getCalories();
+        calorieView.setText(calories + " cal");
+        
+        price += new SaladTopping(itemKey).getPrice();
+        priceView.setText("$" + String.format("%2.2f", price));
+        
+        layout.addView(item);
+        items.put(itemKey, item);
     }
     
     @Override
     public void onResume() {	
     	super.onResume();
     	shakeStarted = false;
+    	
+        // SENSOR MANAGER
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null){
+            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        }
     	mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
     
@@ -202,17 +239,11 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
     public void onPause() {	
     	super.onPause();
     	shakeStarted = true;
+    	
     	mSensorManager.unregisterListener(this, mSensor);
+    	mSensorManager = null;
     }
-
-    private static final int SHAKE_THRESHOLD = 1000;
-
-    private float x, y, z, last_x, last_y, last_z;
-    long curTime;
-    long lastUpdate = 0;
-    boolean shakeStarted = false;
     
-    // Shakes insta close the activity
     @Override
     public void onSensorChanged(SensorEvent event) {
         curTime = System.currentTimeMillis();
@@ -223,18 +254,15 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
             long diffTime = (curTime - lastUpdate);
             lastUpdate = curTime;
 
-
             x = event.values[0];
             y = event.values[1];
             z = event.values[2];
 
             float speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
 
-            
             if (speed > SHAKE_THRESHOLD && !shakeStarted) {
                 shakeStarted = true;
             	Log.d("sensor", "shake detected w/ speed: " + speed);
-                Toast.makeText(this, "shake detected w/ speed: " + speed, Toast.LENGTH_SHORT).show();
                 
                 // Create intent to deliver some kind of result data
                 Intent result = new Intent();
@@ -254,63 +282,61 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.graphical_bowl, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();            
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public HashMap<String, ImageView> items;
-    public GridLayout layout;
-
     public class saladItemClickListener implements AdapterView.OnItemClickListener {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view,
                                 int position, long id) {
 
-            // ListView Clicked item index
-            //int itemPosition     = position;
-
             // ListView Clicked item value
             String itemKey    = (String) parent.getItemAtPosition(position);
             String imageSource = itemKey.replaceAll(" ", "_").toLowerCase();
 
-            // Show Alert
-            //Toast.makeText(getApplicationContext(),
-            //       "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
-            //        .show();
-
             if (!items.containsKey(itemKey)) {
-                ImageView item = new ImageView(getApplicationContext());
-                item.setBackgroundResource(getResources().getIdentifier(imageSource, "drawable", getApplicationContext().getPackageName()));
-
-                layout.addView(item);
-                items.put(itemKey, item);
-            } else {
+                if (items.size() > layout.getColumnCount()*layout.getRowCount()-2) { //Limit components to columns*rows-1 (one spot for price display
+                	Toast.makeText(getApplicationContext(), "You have reached your topping limit", Toast.LENGTH_SHORT).show();
+                } else { // Add topping to salad
+	                ImageView item = new ImageView(getApplicationContext());
+	                item.setBackgroundResource(getResources().getIdentifier(imageSource, "drawable", getApplicationContext().getPackageName()));
+	
+	                addToppingToSalad(itemKey, imageSource);
+                }
+            } else { // Remove topping from salad
+                calories -= new SaladTopping(itemKey).getCalories();
+                calorieView.setText(calories + " cal");
+                
+                price -= new SaladTopping(itemKey).getPrice();
+                priceView.setText("$" + String.format("%2.2f", price));
+            	
                 layout.removeView(items.get(itemKey));
                 items.remove(itemKey);
             }
-            //Log.i("array list of items", items.toString());
-
-            //rocketAnimation = (AnimationDrawable) rocketImage.getBackground();
         }
     }
-
 }
+
+/* 
+
+@Override
+public boolean onCreateOptionsMenu(Menu menu) {
+    // Inflate the menu; this adds items to the action bar if it is present.
+    getMenuInflater().inflate(R.menu.graphical_bowl, menu);
+    return true;
+}
+
+@Override
+public boolean onOptionsItemSelected(MenuItem item) {
+    // Handle action bar item clicks here. The action bar will
+    // automatically handle clicks on the Home/Up button, so long
+    // as you specify a parent activity in AndroidManifest.xml.
+    int id = item.getItemId();            
+
+    //noinspection SimplifiableIfStatement
+    if (id == R.id.action_settings) {
+        return true;
+    }
+
+    return super.onOptionsItemSelected(item);
+}
+
+*/ 

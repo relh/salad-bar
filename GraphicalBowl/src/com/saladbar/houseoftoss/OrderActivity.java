@@ -251,7 +251,7 @@ public class OrderActivity extends Activity {
                 while (null != (salad = reader.readLine())) {
                 	    time = reader.readLine();
                 	    Salad salObj = new Salad();
-                	    salObj.SetDate(Long.parseLong(time));
+                	    salObj.setDate(Long.parseLong(time));
                 	    String[] temp = salad.split(", ");
                 	    for(int i =0; i < temp.length; i++){
                 	    	salObj.toggleSaladTopping(temp[i]);

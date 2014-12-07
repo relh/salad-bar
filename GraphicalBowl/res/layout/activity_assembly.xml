@@ -12,17 +12,41 @@
 
     <GridLayout
         android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:rowCount="1"
+        android:id="@+id/header" >
+            
+        <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:id="@+id/instructions" />
+        
+        <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+			android:id="@+id/calorieView" />
+        
+        <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:id="@+id/priceView" />
+    </GridLayout>
+    
+    <GridLayout
+        android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="3"
         android:columnCount="6"
-        android:rowCount="5"
+        android:rowCount="4"
         android:orientation="horizontal"
         android:id="@+id/graphicLayout" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="1"
+        android:layout_weight="2"
+        android:baselineAligned="false"
         android:orientation="horizontal"
         android:id="@+id/bottomLayout" >
 
@@ -63,7 +87,7 @@
                 android:id="@+id/toppingHeader" />
             <ListView
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"
                 android:choiceMode="multipleChoice"
                 android:id="@+id/toppings" />

@@ -35,7 +35,7 @@ public class Salad{
 		this.ready=new Date(temp + (15 * ONE_MINUTE_IN_MILLIS));
 	}
 	
-	public void SetDate(Long date){
+	public void setDate(Long date){
 		this.ready = new Date(date);
 	}
 	public ArrayList<String> getToppings(){
@@ -54,7 +54,6 @@ public class Salad{
 			details.add(new SaladTopping(topping));
 		}
 	}
-	
 	
 	public double addPrice () {
 		double total = 0;
