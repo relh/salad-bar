@@ -113,14 +113,17 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
         // Add headers
         TextView baseHeader = (TextView) findViewById(R.id.baseHeader);
         baseHeader.setText("Bases:");
+        baseHeader.setTextColor(Color.BLACK);
         baseHeader.setBackgroundColor(Color.RED);
 
         TextView proteinHeader = (TextView) findViewById(R.id.proteinHeader);
         proteinHeader.setText("Protein:");
+        proteinHeader.setTextColor(Color.BLACK);
         proteinHeader.setBackgroundColor(Color.GREEN);
 
         TextView toppingHeader = (TextView) findViewById(R.id.toppingHeader);
         toppingHeader.setText("Toppings:");
+        toppingHeader.setTextColor(Color.BLACK);
         toppingHeader.setBackgroundColor(Color.BLUE);
 
         items = new HashMap<String, ImageView>();
