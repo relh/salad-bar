@@ -8,46 +8,18 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.GridLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public class DisplayActivity extends Activity {
 
 	ToppingView mToppingView;
+	RelativeLayout relativeLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,14 +31,18 @@ public class DisplayActivity extends Activity {
 		ArrayList<String> toppings = data.getStringArrayListExtra(OrderActivity.EXTRA_SALAD);
 
 		// GRAPHICAL LAYOUT
-		RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.graphicLayout);
+		relativeLayout = (RelativeLayout) findViewById(R.id.frame);
 		
 		// Add toppings
 		for (int i = 0; i < toppings.size(); i++) {
-			relativeLayout.addView(getToppingView(toppings.get(i)));
+			String imageSource = toppings.get(i).replaceAll(" ", "_").toLowerCase();
+			
+			ToppingView toppingView = new ToppingView(getApplicationContext(),
+					BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(imageSource, "drawable", getApplicationContext().getPackageName())));
+			
+			relativeLayout.addView(toppingView); //getToppingView(toppings.get(i).replaceAll(" ", "_").toLowerCase()));
 		} 
 	} 
-
 
 	public ToppingView getToppingView(String imageSource) {
 		ToppingView toppingView = new ToppingView(getApplicationContext(),
@@ -85,7 +61,7 @@ public class DisplayActivity extends Activity {
 		private float mX, mY, mDx, mDy, mRotation;
 		private final SurfaceHolder mSurfaceHolder;
 		private final Paint mPainter = new Paint();
-		private Thread mDrawingThread;
+		private Thread mDrawingThread; 
 
 		private static final int MOVE_STEP = 1;
 		private static final float ROT_STEP = 1.0f;
