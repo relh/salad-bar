@@ -263,11 +263,15 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
             if (speed > SHAKE_THRESHOLD && !shakeStarted) {
                 shakeStarted = true;
             	Log.d("sensor", "shake detected w/ speed: " + speed);
+            	ArrayList<String> toppings = new ArrayList<String>(items.keySet());
                 
-                // Create intent to deliver some kind of result data
+            	// Display graphical salad toss
+            	Intent display = new Intent(this, DisplayActivity.class);
+            	display.putExtra(OrderActivity.EXTRA_SALAD, toppings);
+            	startActivity(display);
+            	
+                // Create intent to deliver salad result data
                 Intent result = new Intent();
-                ArrayList<String> toppings = new ArrayList<String>(items.keySet());
-                Log.i("toppings being returned", toppings.toString());
                 result.putExtra(OrderActivity.EXTRA_SALAD, toppings);
                 setResult(Activity.RESULT_OK, result);
             	mSensorManager.unregisterListener(this, mSensor);
@@ -293,8 +297,6 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
             String imageSource = itemKey.replaceAll(" ", "_").toLowerCase();
 
             if (!items.containsKey(itemKey)) {
-            	System.out.println(layout.getColumnCount()*layout.getRowCount());
-            	System.out.println(items.size());
                 if (items.size() > layout.getColumnCount()*layout.getRowCount()-1) { //Limit components to columns*rows-1 (one spot for price display
                 	Toast.makeText(getApplicationContext(), "You have reached your topping limit", Toast.LENGTH_SHORT).show();
                 } else { // Add topping to salad
