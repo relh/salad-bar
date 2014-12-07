@@ -59,11 +59,11 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
         
         // HEADERS
         TextView instructions = (TextView) findViewById(R.id.instructions);
-        instructions.setText("Shake to Confirm your Salad!");
+        instructions.setText("Shake to Confirm your Salad!  ");
         
         calories = 0;
         calorieView = (TextView) findViewById(R.id.calorieView);
-        calorieView.setText("0 cal");
+        calorieView.setText("0 cal  ");
         
         price = 0;
         priceView = (TextView) findViewById(R.id.priceView);
@@ -212,7 +212,7 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
         item.setBackgroundResource(getResources().getIdentifier(imageSource, "drawable", getApplicationContext().getPackageName()));
 
         calories += new SaladTopping(itemKey).getCalories();
-        calorieView.setText(calories + " cal");
+        calorieView.setText(calories + " cal  ");
         
         price += new SaladTopping(itemKey).getPrice();
         priceView.setText("$" + String.format("%2.2f", price));
@@ -293,7 +293,9 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
             String imageSource = itemKey.replaceAll(" ", "_").toLowerCase();
 
             if (!items.containsKey(itemKey)) {
-                if (items.size() > layout.getColumnCount()*layout.getRowCount()-2) { //Limit components to columns*rows-1 (one spot for price display
+            	System.out.println(layout.getColumnCount()*layout.getRowCount());
+            	System.out.println(items.size());
+                if (items.size() > layout.getColumnCount()*layout.getRowCount()-1) { //Limit components to columns*rows-1 (one spot for price display
                 	Toast.makeText(getApplicationContext(), "You have reached your topping limit", Toast.LENGTH_SHORT).show();
                 } else { // Add topping to salad
 	                ImageView item = new ImageView(getApplicationContext());
@@ -303,7 +305,7 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
                 }
             } else { // Remove topping from salad
                 calories -= new SaladTopping(itemKey).getCalories();
-                calorieView.setText(calories + " cal");
+                calorieView.setText(calories + " cal  ");
                 
                 price -= new SaladTopping(itemKey).getPrice();
                 priceView.setText("$" + String.format("%2.2f", price));
