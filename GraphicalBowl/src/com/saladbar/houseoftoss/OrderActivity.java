@@ -93,6 +93,35 @@ public class OrderActivity extends Activity {
         this.mAdapter = new SaladArrayAdapter(this);
         ListView view = (ListView) findViewById(R.id.orders);
         view.setAdapter(this.mAdapter);
+        view.setOnItemClickListener(new OnItemClickListener() {
+        	
+			@Override
+        	public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				final Salad salad = (Salad)mAdapter.getItem(position);
+        		AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this);
+        		alertDialog.setTitle("Delete")
+        		.setMessage("Do you want to remove this order?")
+        		.setCancelable(false)
+        		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						mAdapter.remove(salad);
+					}
+				})
+        		.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int id) {
+						// TODO Auto-generated method stub
+						dialog.cancel();
+					}
+				});
+        		
+        		AlertDialog alert = alertDialog.create();
+        		alert.show();
+        	}
+        });
     }
 
     @Override
