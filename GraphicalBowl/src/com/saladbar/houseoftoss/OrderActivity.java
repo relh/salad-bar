@@ -17,6 +17,7 @@ import java.util.TimerTask;
 
 import android.speech.RecognizerIntent;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.pm.ResolveInfo;
 import android.content.Context;
 import android.content.Intent;
