@@ -17,11 +17,7 @@ public class SplashActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("Initializing", "1");
         setContentView(R.layout.splash);
-        Log.d("Initializing", "2");
-        //requestWindowFeature(Window.FEATURE_NO_TITLE);
-        Log.d("Initializing", "3");
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
         		WindowManager.LayoutParams.FLAG_FULLSCREEN);
         new Handler().postDelayed(new Runnable() {
