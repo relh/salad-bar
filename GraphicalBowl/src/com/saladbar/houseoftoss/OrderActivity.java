@@ -247,8 +247,11 @@ public class OrderActivity extends Activity {
                 reader = new BufferedReader(new InputStreamReader(fis));
 
                 String salad = null;
+                String time = null;
                 while (null != (salad = reader.readLine())) {
+                	    time = reader.readLine();
                 	    Salad salObj = new Salad();
+                	    salObj.SetDate(Long.parseLong(time));
                 	    String[] temp = salad.split(", ");
                 	    for(int i =0; i < temp.length; i++){
                 	    	salObj.toggleSaladTopping(temp[i]);

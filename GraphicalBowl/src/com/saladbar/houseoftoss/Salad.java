@@ -13,12 +13,13 @@ public class Salad{
 	private ArrayList<String> toppings;
 	private Date ready;
 	private ArrayList<SaladTopping> details;
-	
+	static final long ONE_MINUTE_IN_MILLIS=60000;//millisecs
+
 	public Salad(){
 		this.toppings = new ArrayList<String>();
 		this.details = new ArrayList<SaladTopping>();
-		this.ready = new Date();
-		Log.d("test", this.ready.toString());
+		long temp = (new Date()).getTime();
+		this.ready=new Date(temp + (15 * ONE_MINUTE_IN_MILLIS));
 	}
 	
 	public Salad(ArrayList<String> toppings){
@@ -30,11 +31,12 @@ public class Salad{
 				this.details.add(t);
 			}
 		}
-		this.ready = new Date();
+		long temp = (new Date()).getTime();
+		this.ready=new Date(temp + (15 * ONE_MINUTE_IN_MILLIS));
 	}
 	
-	public void SetDate(Date date){
-		this.ready = date;
+	public void SetDate(Long date){
+		this.ready = new Date(date);
 	}
 	public ArrayList<String> getToppings(){
 		return this.toppings;
@@ -76,11 +78,11 @@ public class Salad{
 	}
 	
 	public String toString() {
-		return getToppingsString(); 
+		return getToppingsString() + ITEM_SEP + ready.getTime(); 
 	}
 	
 	public String toLog() {
-		    return getToppingsString() + ITEM_SEP; 
+		    return getToppingsString() + ITEM_SEP + ready.getTime() + ITEM_SEP; 
 	}
 	
 	public String getToppingsString(){
