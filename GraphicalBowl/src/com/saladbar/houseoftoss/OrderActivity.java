@@ -89,6 +89,7 @@ public class OrderActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Order History");
         setContentView(R.layout.activity_main);
         this.mAdapter = new SaladArrayAdapter(this);
         ListView view = (ListView) findViewById(R.id.orders);
