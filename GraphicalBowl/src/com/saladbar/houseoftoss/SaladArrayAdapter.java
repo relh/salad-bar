@@ -69,4 +69,10 @@ public class SaladArrayAdapter extends BaseAdapter{
 		// TODO Auto-generated method stub
 		return position;
 	}
+
+	public void remove(Salad salad) {
+		mItems.remove(salad);
+		notifyDataSetChanged();
+		
+	}
 }

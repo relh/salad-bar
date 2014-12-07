@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 
 
 public class SplashActivity extends Activity {
@@ -15,8 +17,11 @@ public class SplashActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("Initializing", "1");
         setContentView(R.layout.splash);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Log.d("Initializing", "2");
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Log.d("Initializing", "3");
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
         		WindowManager.LayoutParams.FLAG_FULLSCREEN);
         new Handler().postDelayed(new Runnable() {
@@ -25,7 +30,6 @@ public class SplashActivity extends Activity {
 
                 Log.i(TAG,
                         "Entered splash page");
-                
                 Intent intent = new Intent(SplashActivity.this, OrderActivity.class);
                 startActivity(intent);
                 finish();
