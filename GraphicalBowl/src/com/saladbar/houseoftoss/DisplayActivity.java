@@ -61,14 +61,8 @@ public class DisplayActivity extends Activity {
 					BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(imageSource, "drawable", getApplicationContext().getPackageName())));
 			
 			mFrame.addView(toppingView); //getToppingView(toppings.get(i).replaceAll(" ", "_").toLowerCase()));
+			toppingView.start();
 		} 
-	}
-
-	public ToppingView getToppingView(String imageSource) {
-		ToppingView toppingView = new ToppingView(getApplicationContext(),
-				BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(imageSource, "drawable", getApplicationContext().getPackageName())));
-		System.out.println(toppingView);
-		return toppingView;
 	}
 
 	public class ToppingView extends View {
@@ -82,65 +76,47 @@ public class DisplayActivity extends Activity {
 
 		// location, speed and direction of the bubble
 		private float mXPos, mYPos, mDx, mDy, mRadius, mRadiusSquared;
+		private float mXFinal, mYFinal;
 		private long mRotate, mDRotate;
 
 		ToppingView(Context context, Bitmap bitmap) {
 			super(context);
 			
 			mBitmap = bitmap;
-
 			mBitmapWidth = (int) getResources().getDimension(
 						R.dimen.image);
 
 			// Create a new random number generator to
-			// randomize size, rotation, speed and direction
+			// randomize starting position and final position
 			Random r = new Random();
 
-			float x = (float)Math.ceil(r.nextDouble()*mDisplayWidth);
-			float y = (float)Math.ceil(r.nextDouble()*mDisplayHeight);
-
-			Log.i(TAG, "Creating Bubble at: x:" + x + " y:" + y);
+			// Starting position
+			mXPos = (float)Math.ceil(r.nextDouble()*mDisplayWidth);
+			mYPos = (float)Math.ceil(r.nextDouble()*mDisplayHeight);
+			Log.i(TAG, "Creating Topping at: x:" + mXPos + " y:" + mYPos);
 			
-			// Creates the bubble bitmap for this BubbleView
+			// Creates the topping bitmap for this BubbleView
 			createScaledBitmap(r);
 
 			// Radius of the Bitmap
 			mRadius = mBitmapWidth / 2;
 			mRadiusSquared = mRadius * mRadius;
 			
-			// Adjust position to center the bubble under user's finger
-			mXPos = x - mRadius;
-			mYPos = y - mRadius;
-
-			// Set the BubbleView's speed and direction
 			setSpeedAndDirection(r);
 
-			// Set the BubbleView's rotation
-			setRotation(r);
-
 			mPainter.setAntiAlias(true);
-
-			start();
 		}
 
-		private void setRotation(Random r) {
-			// TO DO - set rotation in range [1..3]
-            mDRotate = (long)Math.ceil(r.nextDouble() * 6 - 3);
+		private void createScaledBitmap(Random r) {
+			mBitmapWidth = BITMAP_SIZE * 3;
+            mBitmap = Bitmap.createScaledBitmap(mBitmap, mBitmapWidth, mBitmapWidth, false);
 		}
-
+		
 		private void setSpeedAndDirection(Random r) {
                 mDx = (float)Math.ceil(r.nextDouble() * 6 - 3);
                 mDy = (float)Math.ceil(r.nextDouble() * 6 - 3);
+                System.out.println(mDx + " " + mDy);
         }
-
-		private void createScaledBitmap(Random r) {
-
-			mBitmapWidth = BITMAP_SIZE * 3;
-
-            // TO DO - create the scaled bitmap using size set above
-            mBitmap = Bitmap.createScaledBitmap(mBitmap, mBitmapWidth, mBitmapWidth, false);
-			
-		}
 
         public ToppingView view = this;
 
@@ -157,32 +133,22 @@ public class DisplayActivity extends Activity {
 			mMoverFuture = executor.scheduleWithFixedDelay(new Runnable() {
 				@Override
 				public void run() {
-
-                    // TO DO - implement movement logic.
-                    // Each time this method is run the BubbleView should
-                    // move one step. If the BubbleView exits the display,
-                    // stop the BubbleView's Worker Thread.
-                    // Otherwise, request that the BubbleView be redrawn.
-                    Log.i("Am I called?", "I'm being being called");
-
-                    if (moveWhileOnScreen()) {
-                        view.invalidate();
-                    } else {
-                        Log.i("Off screen", "I WENT OFFSCREEN MOFOS");
-                        stop(false);
-                    }
+                    mXPos += mDx;
+                    mYPos += mDy;
+					
+					view.invalidate();
+                                        
+                   // if (mXPos == mXFinal) {
+                    	Log.i(TAG, "Made it to final spot!");
+                    	stop(false);
+                   // }
                 }
 
 			}, 0, REFRESH_RATE, TimeUnit.MILLISECONDS);
 		}
 
-		// Cancel the Bubble's movement
-		// Remove Bubble from mFrame
-		// Play pop sound if the BubbleView was popped
-
 		private void stop(final boolean wasPopped) {
-
-            Log.i("GOT TO STOP", "DIDI II HHUH?");
+            Log.i(TAG, "Stopped");
 			if (null != mMoverFuture) {
 
 				if (!mMoverFuture.isDone()) {
@@ -192,71 +158,17 @@ public class DisplayActivity extends Activity {
 				// This work will be performed on the UI Thread
 				mFrame.post(new Runnable() {
 					@Override
-					public void run() {
-
-						// TO DO - Remove the BubbleView from mFrame
-
-                        mFrame.removeView(view);
-
-						// TO DO - If the bubble was popped by user,
-						// play the popping sound
-						
-						Log.i(TAG, "Bubble removed from view!");
-					}
+					public void run() { mFrame.removeView(view); }
 				});
 			}
 		}
 
-		// Draw the Bubble at its current location
 		@Override
 		protected synchronized void onDraw(Canvas canvas) {
-
-			// TODO - save the canvas
+			Log.i(TAG, "onDraw() called");
 			canvas.save();
-
-			// TODO - increase the rotation of the original image by mDRotate
-            mRotate += mDRotate;
-
-			// TODO Rotate the canvas by current rotation
-			// Hint - Rotate around the bubble's center, not its position
-
-            canvas.rotate(mRotate, mXPos, mYPos);
-
-			// TODO - draw the bitmap at it's new location
             canvas.drawBitmap(mBitmap, mXPos, mYPos, mPainter);
-
-			// TODO - restore the canvas
 			canvas.restore();
-
-		}
-
-		// Returns true if the BubbleView is still on the screen after the move
-		// operation
-		private synchronized boolean moveWhileOnScreen() {
-
-			// TO DO - Move the BubbleView
-            mXPos += mDx;
-            mYPos += mDy;
-
-            return isOutOfView();
-
-		}
-
-		// Return true if the BubbleView is still on the screen after the move
-		// operation
-		private boolean isOutOfView() {
-
-            Log.i("pos", String.valueOf(mXPos));
-            Log.i("pos", String.valueOf(mYPos));
-
-			// TO DO - Return true if the BubbleView is still on the screen after
-			// the move operation
-            if (mXPos < 0 || mXPos > mDisplayWidth || mYPos < 0 || mYPos > mDisplayHeight) {
-                Log.i("OH SHIZ", "Im out of view");
-                return false;
-            }
-
-			return true;
 		}
 	}
 
