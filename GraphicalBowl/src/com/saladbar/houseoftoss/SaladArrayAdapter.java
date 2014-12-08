@@ -40,6 +40,7 @@ public class SaladArrayAdapter extends BaseAdapter{
 	    TextView toppings = (TextView) rowView.findViewById(R.id.toppings);
 	    TextView description = (TextView) rowView.findViewById(R.id.description);
 	    
+	    saladImg.setImageBitmap(salad.getIcon());
 	    toppings.setText(salad.getToppingsString());
 	    description.setText("Price: " +  salad.getPrice() + "\nCalories: " + salad.getCalories() + 
 	    "\nReady: " + salad.getReady());

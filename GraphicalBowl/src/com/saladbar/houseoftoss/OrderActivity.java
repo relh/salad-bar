@@ -23,6 +23,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.speech.RecognizerIntent;
 import android.os.Bundle;
 import android.util.Log;
@@ -188,27 +190,22 @@ public class OrderActivity extends Activity {
 	        	LaunchSaladCreator(salad);
 	        	
         	}
-	        else if(resultCode == RecognizerIntent.RESULT_AUDIO_ERROR){
-	        	
-		    }
-	        else if(resultCode == RecognizerIntent.RESULT_CLIENT_ERROR){
-		    	
-		    }
-	        else if(resultCode == RecognizerIntent.RESULT_NETWORK_ERROR){
-		    	
-		    }
-	        else if(resultCode == RecognizerIntent.RESULT_NO_MATCH){
-		    	
-		    }
-	        else if(resultCode == RecognizerIntent.RESULT_SERVER_ERROR){
-		    	
-		    }
+	        else if(resultCode == RecognizerIntent.RESULT_AUDIO_ERROR){ }
+	        else if(resultCode == RecognizerIntent.RESULT_CLIENT_ERROR){ }
+	        else if(resultCode == RecognizerIntent.RESULT_NETWORK_ERROR){ }
+	        else if(resultCode == RecognizerIntent.RESULT_NO_MATCH){ }
+	        else if(resultCode == RecognizerIntent.RESULT_SERVER_ERROR){ }
         }
         
         if (requestCode == SALAD_REQUEST_CODE){
         	if(resultCode == RESULT_OK) {
         	    ArrayList<String> tops = data.getStringArrayListExtra(EXTRA_SALAD);
-        	    mAdapter.add(new Salad(tops));
+        	    Bitmap icon = (Bitmap) data.getParcelableExtra("image");
+        	    
+        	    mAdapter.add(new Salad(tops, icon));
+        	    
+        	    // todo save image
+        	    
         	}
         }
         
@@ -248,6 +245,7 @@ public class OrderActivity extends Activity {
 
                 String salad = null;
                 String time = null;
+                int idx = 0;
                 while (null != (salad = reader.readLine())) {
                 	    time = reader.readLine();
                 	    Salad salObj = new Salad();
@@ -256,7 +254,13 @@ public class OrderActivity extends Activity {
                 	    for(int i =0; i < temp.length; i++){
                 	    	salObj.toggleSaladTopping(temp[i]);
                 	    }
+                	    String filename = "bitmap" + idx + ".png";
+                	    FileInputStream is = this.openFileInput(filename);
+                	    Bitmap bitmap = BitmapFactory.decodeStream(is);
+                	    salObj.setIcon(bitmap);
+                	    
                         mAdapter.add(salObj);
+                        idx++;
                 }
 
         } catch (FileNotFoundException e) {
@@ -283,7 +287,12 @@ public class OrderActivity extends Activity {
 
                 for (int idx = 0; idx < mAdapter.getCount(); idx++) {
                         writer.println(mAdapter.getItem(idx));
-
+            		    //Write file
+                        Bitmap toWrite = ((Salad)mAdapter.getItem(idx)).getIcon();
+            		    String filename = "bitmap" + idx + ".png";
+            		    FileOutputStream stream = this.openFileOutput(filename, Context.MODE_PRIVATE);
+            		    toWrite.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            		    stream.close();
                 }
         } catch (IOException e) {
                 e.printStackTrace();

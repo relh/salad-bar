@@ -144,21 +144,24 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
         proteinList.setAdapter(proteinAdapter);
         toppingList.setAdapter(toppingAdapter);
 
+        //int text = Color.rgb(42, 186, 26);
+        int background = Color.rgb(194, 155, 29);
+        
         // Add headers
         TextView baseHeader = (TextView) findViewById(R.id.baseHeader);
         baseHeader.setText("Bases:");
-        baseHeader.setTextColor(Color.BLACK);
-        baseHeader.setBackgroundColor(Color.RED);
+        baseHeader.setTextColor(Color.GREEN);
+        baseHeader.setBackgroundColor(background);
 
         TextView proteinHeader = (TextView) findViewById(R.id.proteinHeader);
         proteinHeader.setText("Protein:");
-        proteinHeader.setTextColor(Color.BLACK);
-        proteinHeader.setBackgroundColor(Color.GREEN);
+        proteinHeader.setTextColor(Color.GREEN);
+        proteinHeader.setBackgroundColor(background);
 
         TextView toppingHeader = (TextView) findViewById(R.id.toppingHeader);
         toppingHeader.setText("Toppings:");
-        toppingHeader.setTextColor(Color.BLACK);
-        toppingHeader.setBackgroundColor(Color.BLUE);
+        toppingHeader.setTextColor(Color.GREEN);
+        toppingHeader.setBackgroundColor(background);
 
         items = new HashMap<String, ImageView>();
         
@@ -281,6 +284,8 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
                 	Intent display = new Intent(this, DisplayActivity.class);
                 	display.putExtra(OrderActivity.EXTRA_SALAD, toppings);
                 	startActivityForResult(display, DISPLAY_REQUEST_CODE);
+                	
+                	mSensorManager.unregisterListener(this, mSensor);
             	}
             }
             last_x = x;
@@ -341,10 +346,10 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
 				BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(is, false);
 				
 				Rect tileBounds = new Rect();
-				tileBounds.top = midY-50;
-				tileBounds.bottom = midY+50;
+				tileBounds.top = midY-25;
+				tileBounds.bottom = midY+275;
 				tileBounds.left = midX-50;
-				tileBounds.right = midX+50;
+				tileBounds.right = midX+250;
 				
 				// load tile
 				bmp = decoder.decodeRegion(tileBounds, options);
@@ -353,8 +358,8 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
         	    e.printStackTrace();
         	}
         	
-        	//bmp holds file
-        	System.out.println(bmp);
+        	//BMP holds file
+        	System.out.println("Assembly " + bmp);
         }
     	
 		ArrayList<String> toppings = new ArrayList<String>(items.keySet());
@@ -364,7 +369,6 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
     	result.putExtra(OrderActivity.EXTRA_SALAD, toppings);
     	result.putExtra("image", bmp);
     	setResult(Activity.RESULT_OK, result);
-    	mSensorManager.unregisterListener(this, mSensor);
     	finish();
     }
 }

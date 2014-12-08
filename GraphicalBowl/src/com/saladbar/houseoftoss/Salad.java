@@ -4,25 +4,29 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.graphics.Bitmap;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.ImageView;
 
 public class Salad{
 	public static final String ITEM_SEP = System.getProperty("line.separator");
+	private Bitmap icon;
 	private ArrayList<String> toppings;
 	private Date ready;
 	private ArrayList<SaladTopping> details;
 	static final long ONE_MINUTE_IN_MILLIS=60000;//millisecs
 
 	public Salad(){
+		this.icon = null;
 		this.toppings = new ArrayList<String>();
 		this.details = new ArrayList<SaladTopping>();
 		long temp = (new Date()).getTime();
 		this.ready=new Date(temp + (15 * ONE_MINUTE_IN_MILLIS));
 	}
 	
-	public Salad(ArrayList<String> toppings){
+	public Salad(ArrayList<String> toppings, Bitmap bitmap){
+		this.icon = bitmap;
 		this.toppings = toppings;
 		this.details = new ArrayList<SaladTopping>();
 		if (!toppings.isEmpty()) {
@@ -38,6 +42,10 @@ public class Salad{
 	public void setDate(Long date){
 		this.ready = new Date(date);
 	}
+	
+	public Bitmap getIcon() { return icon; }
+	public void setIcon(Bitmap b) { this.icon = b; return; }
+	
 	public ArrayList<String> getToppings(){
 		return this.toppings;
 	}

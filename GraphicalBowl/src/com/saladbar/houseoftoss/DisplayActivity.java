@@ -98,8 +98,7 @@ public class DisplayActivity extends Activity {
 			super(context);
 			
 			mBitmap = bitmap;
-			mBitmapWidth = (int) getResources().getDimension(
-						R.dimen.image);
+			mBitmapWidth = (int) getResources().getDimension(R.dimen.image);
 
 			// Create a new random number generator to randomize starting position and final position
 			Random r = new Random(); 
@@ -186,18 +185,12 @@ public class DisplayActivity extends Activity {
 		
 		Bitmap bmp = mFrame.getDrawingCache();
 		try { 
-			String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/SaladBar";
-			File dir = new File(file_path);
-			if(!dir.exists())
-			dir.mkdirs();
-			File file = new File(dir, "bitmap.png");
-			FileOutputStream fOut = new FileOutputStream(file);
-			
-			bmp.compress(Bitmap.CompressFormat.PNG, 85, fOut);
-			fOut.flush();
-			fOut.close();
-            
-		    bmp.recycle();
+		    //Write file
+		    String filename = "bitmap.png";
+		    FileOutputStream stream = this.openFileOutput(filename, Context.MODE_PRIVATE);
+		    bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+		    stream.close();
+		    //bmp.recycle();
 		    
 		    //Record bitmap midpoint
 		    int midX = (int)(mDisplayWidth/2.0);
@@ -206,7 +199,7 @@ public class DisplayActivity extends Activity {
         	Intent result = new Intent();
         	result.putExtra("x", midX);
         	result.putExtra("y", midY);
-        	result.putExtra("image", file.getAbsolutePath());
+        	result.putExtra("image", "bitmap.png");
         	setResult(Activity.RESULT_OK, result);
 		} catch (Exception e) {
 		    e.printStackTrace();
