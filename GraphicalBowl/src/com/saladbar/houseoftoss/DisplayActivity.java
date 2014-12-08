@@ -32,6 +32,7 @@ public class DisplayActivity extends Activity {
 	private RelativeLayout mFrame;
 	private DisplayMetrics mDisplay;
 	private int mDisplayWidth, mDisplayHeight;
+	private int finishedToppings;
 
 	private String TAG = "Display Activity"; 
 	
@@ -42,6 +43,7 @@ public class DisplayActivity extends Activity {
 		
 		// GRAPHICAL LAYOUT
 		mFrame = (RelativeLayout) findViewById(R.id.frame);
+		mFrame.setDrawingCacheEnabled(true);
 		
 		mDisplay = new DisplayMetrics();
 		DisplayActivity.this.getWindowManager().getDefaultDisplay()
@@ -52,6 +54,8 @@ public class DisplayActivity extends Activity {
 		// GET PASSED IN TOPPINGS
 		Intent data = getIntent();
 		ArrayList<String> toppings = data.getStringArrayListExtra(OrderActivity.EXTRA_SALAD);
+		
+		finishedToppings = toppings.size();
 		
 		// ADD TOPPINGS
 		for (int i = 0; i < toppings.size(); i++) {
@@ -100,10 +104,10 @@ public class DisplayActivity extends Activity {
 			mBitmapWidth = BITMAP_SIZE * 3;
             mBitmap = Bitmap.createScaledBitmap(mBitmap, mBitmapWidth, mBitmapWidth, false);
 
-            mDx = (float)((mXFinal-mXPos)/30.0);
-            mDy = (float)((mYFinal-mYPos)/30.0);
+            mDx = (float)((mXFinal-mXPos)/50.0);
+            mDy = (float)((mYFinal-mYPos)/50.0);
             
-            System.out.println("D values for 30 time steps: " + mDx + " " + mDy);
+            System.out.println("D values for 50 time steps: " + mDx + " " + mDy);
             
             mPainter.setAntiAlias(true);
 		}
@@ -119,7 +123,7 @@ public class DisplayActivity extends Activity {
 			// Execute the run() in Worker Thread every REFRESH_RATE
 			// milliseconds
 			// Save reference to this job in mMoverFuture
-			mMoverFuture = executor.scheduleAtFixedRate(new Runnable() {
+			mMoverFuture = executor.scheduleWithFixedDelay(new Runnable() {
 				@Override
 				public void run() {
 					System.out.println("Running.. " + mXPos + " " + mYPos);
@@ -129,21 +133,31 @@ public class DisplayActivity extends Activity {
 					
 					view.postInvalidate();
                                         
-                   if (Math.abs(mXPos-mXFinal) < 10 && Math.abs(mYPos-mYFinal) < 10) {
+                   if (Math.abs(mXPos-mXFinal) < 5 && Math.abs(mYPos-mYFinal) < 5) {
                     	Log.i(TAG, "Landed");
-                    	stop(false);
+                    	stop();
                    }
                 }
 
 			}, 0, REFRESH_RATE, TimeUnit.MILLISECONDS);
 		}
 
-		private void stop(final boolean wasPopped) {
+		private void stop() {
             Log.i(TAG, "onStop() called");
 			if (null != mMoverFuture) {
 
 				if (!mMoverFuture.isDone()) {
 					mMoverFuture.cancel(true);
+				}
+				
+				finishedToppings--;
+				System.out.println(finishedToppings);
+				
+				if (finishedToppings <= 0) {
+					Bitmap mySalad = mFrame.getDrawingCache();
+					System.out.println(mySalad);
+					
+					finish();
 				}
 				//mFrame.post(new Runnable() {
 				//	@Override
