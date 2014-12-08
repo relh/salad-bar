@@ -69,15 +69,14 @@ public class DisplayActivity extends Activity {
 
 		private static final int BITMAP_SIZE = 64;
 		private static final int REFRESH_RATE = 40;
-		private final Paint mPainter = new Paint();
+		private Paint mPainter = new Paint();
 		private ScheduledFuture<?> mMoverFuture;
 		private int mBitmapWidth;
 		private Bitmap mBitmap;
 
 		// location, speed and direction of the bubble
-		private float mXPos, mYPos, mDx, mDy, mRadius, mRadiusSquared;
+		private float mXPos, mYPos, mDx, mDy;
 		private float mXFinal, mYFinal;
-		private long mRotate, mDRotate;
 
 		ToppingView(Context context, Bitmap bitmap) {
 			super(context);
@@ -88,41 +87,35 @@ public class DisplayActivity extends Activity {
 
 			// Create a new random number generator to
 			// randomize starting position and final position
-			Random r = new Random();
-
+			Random r = new Random(); 
+ 
 			// Starting position
 			mXPos = (float)Math.ceil(r.nextDouble()*mDisplayWidth);
 			mYPos = (float)Math.ceil(r.nextDouble()*mDisplayHeight);
 			Log.i(TAG, "Creating Topping at: x:" + mXPos + " y:" + mYPos);
+
+			// Final positions are randomly distributed around center screen
+			mXFinal = (float)(mDisplayWidth/2.0);// + Math.ceil(r.nextDouble()*50) - 25);
+			mYFinal = (float)(mDisplayHeight/2.0);// + Math.ceil(r.nextDouble()*50) - 25);
 			
 			// Creates the topping bitmap for this BubbleView
-			createScaledBitmap(r);
-
-			// Radius of the Bitmap
-			mRadius = mBitmapWidth / 2;
-			mRadiusSquared = mRadius * mRadius;
-			
-			setSpeedAndDirection(r);
-
-			mPainter.setAntiAlias(true);
-		}
-
-		private void createScaledBitmap(Random r) {
 			mBitmapWidth = BITMAP_SIZE * 3;
             mBitmap = Bitmap.createScaledBitmap(mBitmap, mBitmapWidth, mBitmapWidth, false);
+
+            mDx = (float)((mXFinal-mXPos)/20.0);
+            mDy = (float)((mYFinal-mYPos)/20.0);
+            
+            System.out.println("X Diffs: " + mXPos + " " + mXFinal);
+            System.out.println("Y Diffs: " + mYPos + " " + mYFinal);
+            System.out.println("D values for 20 time steps: " + mDx + " " + mDy);
+            
+            mPainter.setAntiAlias(true);
 		}
-		
-		private void setSpeedAndDirection(Random r) {
-                mDx = (float)Math.ceil(r.nextDouble() * 6 - 3);
-                mDy = (float)Math.ceil(r.nextDouble() * 6 - 3);
-                System.out.println(mDx + " " + mDy);
-        }
 
         public ToppingView view = this;
 
 		// Start moving the BubbleView & updating the display
 		private void start() {
-
 			// Creates a WorkerThread
 			ScheduledExecutorService executor = Executors
 					.newScheduledThreadPool(1);
@@ -130,18 +123,22 @@ public class DisplayActivity extends Activity {
 			// Execute the run() in Worker Thread every REFRESH_RATE
 			// milliseconds
 			// Save reference to this job in mMoverFuture
-			mMoverFuture = executor.scheduleWithFixedDelay(new Runnable() {
+			mMoverFuture = executor.scheduleAtFixedRate(new Runnable() {
 				@Override
 				public void run() {
+					System.out.println("Running.. " + mXPos + " " + mYPos);
+
                     mXPos += mDx;
                     mYPos += mDy;
 					
-					view.invalidate();
+					view.postInvalidate();
                                         
-                   // if (mXPos == mXFinal) {
+                   if (mXPos - mXFinal < 10) {
                     	Log.i(TAG, "Made it to final spot!");
                     	stop(false);
-                   // }
+                   }
+                   
+                   System.out.println("Finished a run loop");
                 }
 
 			}, 0, REFRESH_RATE, TimeUnit.MILLISECONDS);
@@ -156,18 +153,19 @@ public class DisplayActivity extends Activity {
 				}
 
 				// This work will be performed on the UI Thread
-				mFrame.post(new Runnable() {
-					@Override
-					public void run() { mFrame.removeView(view); }
-				});
+				//mFrame.post(new Runnable() {
+				//	@Override
+				//	public void run() { mFrame.removeView(view); }
+				//});
 			}
 		}
 
 		@Override
 		protected synchronized void onDraw(Canvas canvas) {
+			super.onDraw(canvas);
 			Log.i(TAG, "onDraw() called");
 			canvas.save();
-            canvas.drawBitmap(mBitmap, mXPos, mYPos, mPainter);
+            canvas.drawBitmap(mBitmap, (int)mXPos, (int)mYPos, mPainter);
 			canvas.restore();
 		}
 	}
