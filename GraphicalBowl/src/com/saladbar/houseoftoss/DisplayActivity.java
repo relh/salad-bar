@@ -5,19 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -68,6 +72,8 @@ public class DisplayActivity extends Activity {
 			toppingView.start();
 		} 
 	}
+	
+	public Activity displayActivity = this;
 
 	public class ToppingView extends View {
 
@@ -112,7 +118,7 @@ public class DisplayActivity extends Activity {
             mPainter.setAntiAlias(true);
 		}
 
-        public ToppingView view = this;
+		public ToppingView view = this;
 
 		// Start moving the BubbleView & updating the display
 		private void start() {
@@ -126,9 +132,7 @@ public class DisplayActivity extends Activity {
 			mMoverFuture = executor.scheduleWithFixedDelay(new Runnable() {
 				@Override
 				public void run() {
-					System.out.println("Running.. " + mXPos + " " + mYPos);
-
-                    mXPos += mDx;
+					mXPos += mDx;
                     mYPos += mDy;
 					
 					view.postInvalidate();
@@ -143,8 +147,7 @@ public class DisplayActivity extends Activity {
 		}
 
 		private void stop() {
-            Log.i(TAG, "onStop() called");
-			if (null != mMoverFuture) {
+            if (null != mMoverFuture) {
 
 				if (!mMoverFuture.isDone()) {
 					mMoverFuture.cancel(true);
@@ -154,10 +157,8 @@ public class DisplayActivity extends Activity {
 				System.out.println(finishedToppings);
 				
 				if (finishedToppings <= 0) {
-					Bitmap mySalad = mFrame.getDrawingCache();
-					System.out.println(mySalad);
-					
-					finish();
+					System.out.println("About to finish");
+					onPause();
 				}
 				//mFrame.post(new Runnable() {
 				//	@Override
@@ -168,16 +169,38 @@ public class DisplayActivity extends Activity {
 
 		@Override
 		protected synchronized void onDraw(Canvas canvas) {
-			super.onDraw(canvas);
-			Log.i(TAG, "onDraw() called");
 			canvas.save();
             canvas.drawBitmap(mBitmap, (int)mXPos, (int)mYPos, mPainter);
 			canvas.restore();
 		}
 	}
+	
+	public void onPause() {
+		super.onPause();
+		
+		Bitmap bmp = mFrame.getDrawingCache();
+		try { 
+		    //Write file
+		    String filename = "bitmap.png";
+		    FileOutputStream stream = displayActivity.openFileOutput(filename, Context.MODE_PRIVATE);
+		    bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
 
-	@Override
-	public void onBackPressed() {
+		    //Cleanup
+		    stream.close();
+		    bmp.recycle();
+		    
+		    //Record bitmap midpoint
+		    int midX = (int)(mDisplayWidth/2.0);
+		    int midY = (int)(mDisplayHeight/2.0);
+
+        	Intent result = new Intent();
+        	result.putExtra("x", midX);
+        	result.putExtra("y", midY);
+        	result.putExtra("image", filename);
+        	setResult(Activity.RESULT_OK, result);
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
 		finish();
 	}
 }

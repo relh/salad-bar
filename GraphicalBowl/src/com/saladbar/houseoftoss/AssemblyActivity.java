@@ -3,7 +3,11 @@ package com.saladbar.houseoftoss;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -29,6 +33,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -41,6 +46,9 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
     TextView calorieView;
     double price = 0;
     TextView priceView;
+    
+    //DISPLAY REQUEST CODE
+    public static final int DISPLAY_REQUEST_CODE = 10;
     
     // Shake variables
     private static final int SHAKE_THRESHOLD = 800;
@@ -56,7 +64,7 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         setTitle("Shake your phone to place an order");
         setContentView(R.layout.activity_assembly);
-        
+ 
         // HEADERS        
         calories = 0;
         calorieView = (TextView) findViewById(R.id.calorieView);
@@ -269,17 +277,10 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
             	} else {
             		ArrayList<String> toppings = new ArrayList<String>(items.keySet());
                     
-                    	// Display graphical salad toss
-                    	Intent display = new Intent(this, DisplayActivity.class);
-                    	display.putExtra(OrderActivity.EXTRA_SALAD, toppings);
-                    	startActivity(display);
-                    	
-                    	// Create intent to deliver salad result data
-                    	Intent result = new Intent();
-                    	result.putExtra(OrderActivity.EXTRA_SALAD, toppings);
-                    	setResult(Activity.RESULT_OK, result);
-                    	mSensorManager.unregisterListener(this, mSensor);
-                    	finish();
+                	// Display graphical salad toss
+                	Intent display = new Intent(this, DisplayActivity.class);
+                	display.putExtra(OrderActivity.EXTRA_SALAD, toppings);
+                	startActivityForResult(display, DISPLAY_REQUEST_CODE);
             	}
             }
             last_x = x;
@@ -322,30 +323,47 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
             }
         }
     }
-}
-
-/* 
-
-@Override
-public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.graphical_bowl, menu);
-    return true;
-}
-
-@Override
-public boolean onOptionsItemSelected(MenuItem item) {
-    // Handle action bar item clicks here. The action bar will
-    // automatically handle clicks on the Home/Up button, so long
-    // as you specify a parent activity in AndroidManifest.xml.
-    int id = item.getItemId();            
-
-    //noinspection SimplifiableIfStatement
-    if (id == R.id.action_settings) {
-        return true;
+    
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        System.out.println("We're here");
+        System.out.println(requestCode);
+        System.out.println(resultCode);
+        System.out.println(RESULT_OK);
+        
+    	if (requestCode == DISPLAY_REQUEST_CODE && resultCode == RESULT_OK){
+        	Bitmap bmp = null;
+        	String filename = data.getStringExtra("image");
+        	int midX = data.getIntExtra("x", 360);
+        	int midY = data.getIntExtra("y", 640);
+        	
+        	try {
+        	    FileInputStream is = this.openFileInput(filename);
+				BitmapFactory.Options options = new BitmapFactory.Options();
+				BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(is, false);
+				Rect tileBounds = new Rect();
+				tileBounds.top = midY-50;
+				tileBounds.bottom = midY+50;
+				tileBounds.left = midX-50;
+				tileBounds.right = midX+50;
+				
+				// load tile
+				bmp = decoder.decodeRegion(tileBounds, options);
+        	    is.close();
+        	} catch (Exception e) {
+        	    e.printStackTrace();
+        	}
+        	
+        	//bmp holds file
+        	System.out.println(bmp);
+        }
+    	
+		ArrayList<String> toppings = new ArrayList<String>(items.keySet());
+        
+       	// Create intent to deliver salad result data
+    	Intent result = new Intent();
+    	result.putExtra(OrderActivity.EXTRA_SALAD, toppings);
+    	setResult(Activity.RESULT_OK, result);
+    	mSensorManager.unregisterListener(this, mSensor);
+    	finish();
     }
-
-    return super.onOptionsItemSelected(item);
 }
-
-*/ 
