@@ -57,13 +57,10 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
         setTitle("Shake your phone to place an order");
         setContentView(R.layout.activity_assembly);
         
-        // HEADERS
-        TextView instructions = (TextView) findViewById(R.id.instructions);
-        instructions.setText("Shake to Confirm your Salad!  ");
-        
+        // HEADERS        
         calories = 0;
         calorieView = (TextView) findViewById(R.id.calorieView);
-        calorieView.setText("0 cal  ");
+        calorieView.setText("0 calories");
         
         price = 0;
         priceView = (TextView) findViewById(R.id.priceView);
@@ -212,7 +209,7 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
         item.setBackgroundResource(getResources().getIdentifier(imageSource, "drawable", getApplicationContext().getPackageName()));
 
         calories += new SaladTopping(itemKey).getCalories();
-        calorieView.setText(calories + " cal  ");
+        calorieView.setText(calories + " calories");
         
         price += new SaladTopping(itemKey).getPrice();
         priceView.setText("$" + String.format("%2.2f", price));
@@ -315,7 +312,7 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
                 }
             } else { // Remove topping from salad
                 calories -= new SaladTopping(itemKey).getCalories();
-                calorieView.setText(calories + " cal  ");
+                calorieView.setText(calories + " calories");
                 
                 price -= new SaladTopping(itemKey).getPrice();
                 priceView.setText("$" + String.format("%2.2f", price));

@@ -30,6 +30,7 @@ public class DisplayActivity extends Activity {
 	ToppingView mToppingView;
 	
 	private RelativeLayout mFrame;
+	private DisplayMetrics mDisplay;
 	private int mDisplayWidth, mDisplayHeight;
 
 	private String TAG = "Display Activity"; 
@@ -46,6 +47,12 @@ public class DisplayActivity extends Activity {
 		// GRAPHICAL LAYOUT
 		mFrame = (RelativeLayout) findViewById(R.id.frame);
 		
+		mDisplay = new DisplayMetrics();
+		DisplayActivity.this.getWindowManager().getDefaultDisplay()
+				.getMetrics(mDisplay);
+		mDisplayWidth = mDisplay.widthPixels;
+		mDisplayHeight = mDisplay.heightPixels;
+		
 		// Add toppings
 		for (int i = 0; i < toppings.size(); i++) {
 			String imageSource = toppings.get(i).replaceAll(" ", "_").toLowerCase();
@@ -55,18 +62,6 @@ public class DisplayActivity extends Activity {
 			
 			mFrame.addView(toppingView); //getToppingView(toppings.get(i).replaceAll(" ", "_").toLowerCase()));
 		} 
-	} 
-	
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {
-		super.onWindowFocusChanged(hasFocus);
-		if (hasFocus) {
-
-			// Get the size of the display so this View knows where borders are
-			mDisplayWidth = mFrame.getWidth();
-			mDisplayHeight = mFrame.getHeight();
-
-		}
 	}
 
 	public ToppingView getToppingView(String imageSource) {
@@ -97,15 +92,15 @@ public class DisplayActivity extends Activity {
 			mBitmapWidth = (int) getResources().getDimension(
 						R.dimen.image);
 
-			float x = 400;
-			float y = 400;
-			
-			Log.i(TAG, "Creating Bubble at: x:" + x + " y:" + y);
-
 			// Create a new random number generator to
 			// randomize size, rotation, speed and direction
 			Random r = new Random();
 
+			float x = (float)Math.ceil(r.nextDouble()*mDisplayWidth);
+			float y = (float)Math.ceil(r.nextDouble()*mDisplayHeight);
+
+			Log.i(TAG, "Creating Bubble at: x:" + x + " y:" + y);
+			
 			// Creates the bubble bitmap for this BubbleView
 			createScaledBitmap(r);
 
@@ -125,6 +120,7 @@ public class DisplayActivity extends Activity {
 
 			mPainter.setAntiAlias(true);
 
+			start();
 		}
 
 		private void setRotation(Random r) {
@@ -135,17 +131,11 @@ public class DisplayActivity extends Activity {
 		private void setSpeedAndDirection(Random r) {
                 mDx = (float)Math.ceil(r.nextDouble() * 6 - 3);
                 mDy = (float)Math.ceil(r.nextDouble() * 6 - 3);
-
-                Log.i("my bubble", String.valueOf(mDx));
-                Log.i("my bubble", String.valueOf(mDy));
         }
 
 		private void createScaledBitmap(Random r) {
 
 			mBitmapWidth = BITMAP_SIZE * 3;
-
-            Log.i("BM SIZE", String.valueOf(BITMAP_SIZE));
-            Log.i("BM SIZE", String.valueOf(mBitmapWidth));
 
             // TO DO - create the scaled bitmap using size set above
             mBitmap = Bitmap.createScaledBitmap(mBitmap, mBitmapWidth, mBitmapWidth, false);
@@ -173,7 +163,7 @@ public class DisplayActivity extends Activity {
                     // move one step. If the BubbleView exits the display,
                     // stop the BubbleView's Worker Thread.
                     // Otherwise, request that the BubbleView be redrawn.
-                    Log.i("Am I called?", "I'm not being called");
+                    Log.i("Am I called?", "I'm being being called");
 
                     if (moveWhileOnScreen()) {
                         view.invalidate();

@@ -10,28 +10,26 @@
     android:background="@color/white"
     tools:context=".AssemblyActivity">
 
-    <GridLayout
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:columnCount="3"
-        android:rowCount="1"
+        android:orientation="horizontal"
         android:id="@+id/header" >
-            
-        <TextView
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:id="@+id/instructions" />
         
         <TextView
-	        android:layout_width="wrap_content"
+	        android:layout_width="0dp"
 	        android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:textColor="#000000"
 			android:id="@+id/calorieView" />
         
         <TextView
-	        android:layout_width="wrap_content"
+	        android:layout_width="0dp"
 	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:textColor="#000000"
 	        android:id="@+id/priceView" />
-    </GridLayout>
+    </LinearLayout>
     
     <GridLayout
         android:layout_width="fill_parent"
