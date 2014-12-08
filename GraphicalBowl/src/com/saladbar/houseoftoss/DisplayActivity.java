@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -21,7 +22,12 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -180,13 +186,17 @@ public class DisplayActivity extends Activity {
 		
 		Bitmap bmp = mFrame.getDrawingCache();
 		try { 
-		    //Write file
-		    String filename = "bitmap.png";
-		    FileOutputStream stream = displayActivity.openFileOutput(filename, Context.MODE_PRIVATE);
-		    bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-		    //Cleanup
-		    stream.close();
+			String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/SaladBar";
+			File dir = new File(file_path);
+			if(!dir.exists())
+			dir.mkdirs();
+			File file = new File(dir, "bitmap.png");
+			FileOutputStream fOut = new FileOutputStream(file);
+			
+			bmp.compress(Bitmap.CompressFormat.PNG, 85, fOut);
+			fOut.flush();
+			fOut.close();
+            
 		    bmp.recycle();
 		    
 		    //Record bitmap midpoint
@@ -196,7 +206,7 @@ public class DisplayActivity extends Activity {
         	Intent result = new Intent();
         	result.putExtra("x", midX);
         	result.putExtra("y", midY);
-        	result.putExtra("image", filename);
+        	result.putExtra("image", file.getAbsolutePath());
         	setResult(Activity.RESULT_OK, result);
 		} catch (Exception e) {
 		    e.printStackTrace();

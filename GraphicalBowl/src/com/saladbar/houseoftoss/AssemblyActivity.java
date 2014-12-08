@@ -324,22 +324,22 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
         }
     }
     
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        System.out.println("We're here");
-        System.out.println(requestCode);
-        System.out.println(resultCode);
-        System.out.println(RESULT_OK);
-        
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {       
+    	Bitmap bmp = null;
+    	
     	if (requestCode == DISPLAY_REQUEST_CODE && resultCode == RESULT_OK){
-        	Bitmap bmp = null;
-        	String filename = data.getStringExtra("image");
+        	bmp = null;
         	int midX = data.getIntExtra("x", 360);
         	int midY = data.getIntExtra("y", 640);
+        	String filename = data.getStringExtra("image");
+        	
+        	System.out.println("File: " + filename + " x " + midX + " y " + midY);
         	
         	try {
         	    FileInputStream is = this.openFileInput(filename);
 				BitmapFactory.Options options = new BitmapFactory.Options();
 				BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(is, false);
+				
 				Rect tileBounds = new Rect();
 				tileBounds.top = midY-50;
 				tileBounds.bottom = midY+50;
@@ -362,6 +362,7 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
        	// Create intent to deliver salad result data
     	Intent result = new Intent();
     	result.putExtra(OrderActivity.EXTRA_SALAD, toppings);
+    	result.putExtra("image", bmp);
     	setResult(Activity.RESULT_OK, result);
     	mSensorManager.unregisterListener(this, mSensor);
     	finish();
