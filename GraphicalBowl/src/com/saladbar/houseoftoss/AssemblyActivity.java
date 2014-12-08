@@ -263,19 +263,27 @@ public class AssemblyActivity extends Activity implements SensorEventListener {
             if (speed > SHAKE_THRESHOLD && !shakeStarted) {
                 shakeStarted = true;
             	Log.d("sensor", "shake detected w/ speed: " + speed);
-            	ArrayList<String> toppings = new ArrayList<String>(items.keySet());
-                
-            	// Display graphical salad toss
-            	Intent display = new Intent(this, DisplayActivity.class);
-            	display.putExtra(OrderActivity.EXTRA_SALAD, toppings);
-            	startActivity(display);
-            	
-                // Create intent to deliver salad result data
-                Intent result = new Intent();
-                result.putExtra(OrderActivity.EXTRA_SALAD, toppings);
-                setResult(Activity.RESULT_OK, result);
-            	mSensorManager.unregisterListener(this, mSensor);
-                finish();
+            	//Add empty order control
+            	if (items.keySet().isEmpty()) {
+            		Toast.makeText(getApplicationContext(),"Your salad bowl is empty.", Toast.LENGTH_SHORT).show();
+            		setResult(Activity.RESULT_CANCELED, null);
+            		mSensorManager.unregisterListener(this, mSensor);
+            		finish();
+            	} else {
+            		ArrayList<String> toppings = new ArrayList<String>(items.keySet());
+                    
+                    	// Display graphical salad toss
+                    	Intent display = new Intent(this, DisplayActivity.class);
+                    	display.putExtra(OrderActivity.EXTRA_SALAD, toppings);
+                    	startActivity(display);
+                    	
+                    	// Create intent to deliver salad result data
+                    	Intent result = new Intent();
+                    	result.putExtra(OrderActivity.EXTRA_SALAD, toppings);
+                    	setResult(Activity.RESULT_OK, result);
+                    	mSensorManager.unregisterListener(this, mSensor);
+                    	finish();
+            	}
             }
             last_x = x;
             last_y = y;
