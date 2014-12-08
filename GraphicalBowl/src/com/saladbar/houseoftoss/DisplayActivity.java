@@ -40,20 +40,20 @@ public class DisplayActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_display);
 		
-		// GET PASSED IN TOPPINGS
-		Intent data = getIntent();
-		ArrayList<String> toppings = data.getStringArrayListExtra(OrderActivity.EXTRA_SALAD);
-
 		// GRAPHICAL LAYOUT
 		mFrame = (RelativeLayout) findViewById(R.id.frame);
 		
 		mDisplay = new DisplayMetrics();
 		DisplayActivity.this.getWindowManager().getDefaultDisplay()
 				.getMetrics(mDisplay);
-		mDisplayWidth = mDisplay.widthPixels;
-		mDisplayHeight = mDisplay.heightPixels;
+		mDisplayWidth = mDisplay.widthPixels-175; // Custom center-point adjustment
+		mDisplayHeight = mDisplay.heightPixels-400;
 		
-		// Add toppings
+		// GET PASSED IN TOPPINGS
+		Intent data = getIntent();
+		ArrayList<String> toppings = data.getStringArrayListExtra(OrderActivity.EXTRA_SALAD);
+		
+		// ADD TOPPINGS
 		for (int i = 0; i < toppings.size(); i++) {
 			String imageSource = toppings.get(i).replaceAll(" ", "_").toLowerCase();
 			
@@ -85,29 +85,25 @@ public class DisplayActivity extends Activity {
 			mBitmapWidth = (int) getResources().getDimension(
 						R.dimen.image);
 
-			// Create a new random number generator to
-			// randomize starting position and final position
+			// Create a new random number generator to randomize starting position and final position
 			Random r = new Random(); 
  
 			// Starting position
 			mXPos = (float)Math.ceil(r.nextDouble()*mDisplayWidth);
 			mYPos = (float)Math.ceil(r.nextDouble()*mDisplayHeight);
-			Log.i(TAG, "Creating Topping at: x:" + mXPos + " y:" + mYPos);
 
 			// Final positions are randomly distributed around center screen
-			mXFinal = (float)(mDisplayWidth/2.0);// + Math.ceil(r.nextDouble()*50) - 25);
-			mYFinal = (float)(mDisplayHeight/2.0);// + Math.ceil(r.nextDouble()*50) - 25);
+			mXFinal = (float)(mDisplayWidth/2.0 + Math.ceil(r.nextDouble()*150) - 75);
+			mYFinal = (float)(mDisplayHeight/2.0 + Math.ceil(r.nextDouble()*150) - 75);
 			
 			// Creates the topping bitmap for this BubbleView
 			mBitmapWidth = BITMAP_SIZE * 3;
             mBitmap = Bitmap.createScaledBitmap(mBitmap, mBitmapWidth, mBitmapWidth, false);
 
-            mDx = (float)((mXFinal-mXPos)/20.0);
-            mDy = (float)((mYFinal-mYPos)/20.0);
+            mDx = (float)((mXFinal-mXPos)/30.0);
+            mDy = (float)((mYFinal-mYPos)/30.0);
             
-            System.out.println("X Diffs: " + mXPos + " " + mXFinal);
-            System.out.println("Y Diffs: " + mYPos + " " + mYFinal);
-            System.out.println("D values for 20 time steps: " + mDx + " " + mDy);
+            System.out.println("D values for 30 time steps: " + mDx + " " + mDy);
             
             mPainter.setAntiAlias(true);
 		}
@@ -133,26 +129,22 @@ public class DisplayActivity extends Activity {
 					
 					view.postInvalidate();
                                         
-                   if (mXPos - mXFinal < 10) {
-                    	Log.i(TAG, "Made it to final spot!");
+                   if (Math.abs(mXPos-mXFinal) < 10 && Math.abs(mYPos-mYFinal) < 10) {
+                    	Log.i(TAG, "Landed");
                     	stop(false);
                    }
-                   
-                   System.out.println("Finished a run loop");
                 }
 
 			}, 0, REFRESH_RATE, TimeUnit.MILLISECONDS);
 		}
 
 		private void stop(final boolean wasPopped) {
-            Log.i(TAG, "Stopped");
+            Log.i(TAG, "onStop() called");
 			if (null != mMoverFuture) {
 
 				if (!mMoverFuture.isDone()) {
 					mMoverFuture.cancel(true);
 				}
-
-				// This work will be performed on the UI Thread
 				//mFrame.post(new Runnable() {
 				//	@Override
 				//	public void run() { mFrame.removeView(view); }
